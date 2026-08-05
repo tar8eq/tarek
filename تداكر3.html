@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAREK - نظام إدارة تذاكر الطيران</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0b1424;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        /* ===== TOP NAV ===== */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 60px;
+            padding: 10px 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            color: #ffd700;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .logo h1 i {
+            margin-left: 10px;
+        }
+        .logo span {
+            color: #7ec8e3;
+            font-size: 0.7rem;
+            display: block;
+            opacity: 0.7;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            padding: 10px 24px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links button i {
+            font-size: 1rem;
+        }
+
+        .nav-links button:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-links button.active {
+            background: linear-gradient(135deg, #ffd700, #f0b300);
+            color: #0b1424;
+            border-color: #ffd700;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-title i {
+            font-size: 1.8rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a2a4a, #0f1a30);
+            border-radius: 40px;
+            padding: 40px;
+            max-width: 550px;
+            width: 90%;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .modal-content .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            background: rgba(255, 107, 107, 0.15);
+            border: none;
+            color: #ff6b6b;
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content .close-btn:hover {
+            background: #ff6b6b;
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-content h2 {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-content .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-content .form-group label {
+            display: block;
+            color: #ccd6f0;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal-content .form-group input,
+        .modal-content .form-group select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .modal-content .form-group input:focus,
+        .modal-content .form-group select:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+        }
+
+        .balance-btns {
+            display: flex;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .balance-btns button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            background: transparent;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .balance-btns button.active-debit {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff6b6b;
+        }
+
+        .balance-btns button.active-credit {
+            border-color: #51cf66;
+            background: rgba(81, 207, 102, 0.15);
+            color: #51cf66;
+        }
+
+        .balance-btns button:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-content .btn-submit {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, #ffd700, #f0b300);
+            color: #0b1424;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .modal-content .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3);
+        }
+
+        /* ===== COMPANIES GRID ===== */
+        .companies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .company-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+            border-radius: 24px;
+            padding: 25px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .company-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+
+        .company-card:hover::before {
+            opacity: 1;
+        }
+
+        .company-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .company-card .icon {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .company-card .name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .company-card .balance-info {
+            font-size: 0.8rem;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .company-card .balance-info .debit {
+            color: #ff6b6b;
+        }
+        .company-card .balance-info .credit {
+            color: #51cf66;
+        }
+
+        .company-card .del-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 107, 107, 0.2);
+            border: none;
+            color: #ff6b6b;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .company-card .del-btn:hover {
+            background: #ff6b6b;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .btn-add-company {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 24px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 180px;
+        }
+
+        .btn-add-company:hover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .btn-add-company i {
+            font-size: 3rem;
+            color: #ffd700;
+        }
+
+        .btn-add-company span {
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* ===== TRANSACTIONS ===== */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            color: #ccd6f0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px 18px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 44px;
+        }
+
+        .form-group select option {
+            background: #1a2a4a;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700, #f0b300);
+            color: #0b1424;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66, #2b8a3e);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(81, 207, 102, 0.25);
+        }
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(81, 207, 102, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #c92a2a);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.25);
+        }
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4dabf7, #1864ab);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(77, 171, 247, 0.25);
+        }
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(77, 171, 247, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: #ccc;
+        }
+        .btn-outline:hover {
+            border-color: #ffd700;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 900px;
+        }
+
+        thead {
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: right;
+            color: #ffd700;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.12);
+        }
+
+        td {
+            padding: 12px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #e0e8f5;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 3px 16px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-issue {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+        .badge-fine {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        .badge-payment {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btns .btn-sm {
+            padding: 5px 14px;
+            font-size: 0.7rem;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #4dabf7;
+            color: #fff;
+        }
+        .btn-edit:hover {
+            background: #339af0;
+            transform: scale(1.05);
+        }
+
+        .btn-del {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        .btn-del:hover {
+            background: #e03131;
+            transform: scale(1.05);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 15px;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 10px 20px;
+            color: #fff;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            border-color: #ffd700;
+        }
+
+        /* ===== PRINT PAGE ===== */
+        .print-controls {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 25px;
+        }
+
+        .print-controls .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .print-preview {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 15px;
+        }
+
+        .currency-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .currency-box {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 18px 22px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+        }
+
+        .currency-box .currency-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .currency-box .currency-name {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .currency-box .total-debit {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .currency-box .total-credit {
+            color: #51cf66;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .currency-box .balance {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            margin-top: 5px;
+        }
+
+        .print-btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 16px 28px;
+            border-radius: 60px;
+            border-left: 5px solid #ffd700;
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transform: translateX(-120%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 999;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            body {
+                background: #fff !important;
+                padding: 10px;
+            }
+            .top-nav,
+            .filter-bar,
+            .btn-group,
+            .action-btns,
+            .print-btn-group,
+            .no-print,
+            .modal-overlay {
+                display: none !important;
+            }
+            .page {
+                display: block !important;
+            }
+            .page:not(.active) {
+                display: none !important;
+            }
+            #page-print {
+                display: block !important;
+            }
+            .card {
+                background: #fff !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                padding: 15px;
+            }
+            .card-title {
+                color: #0b1424 !important;
+            }
+            table {
+                font-size: 0.7rem;
+                min-width: 100%;
+            }
+            th {
+                color: #0b1424 !important;
+                border-bottom-color: #999 !important;
+            }
+            td {
+                color: #222 !important;
+            }
+            .badge {
+                border: 1px solid #333;
+            }
+            .badge-issue {
+                background: #fff3cd !important;
+                color: #856404 !important;
+            }
+            .badge-fine {
+                background: #f8d7da !important;
+                color: #721c24 !important;
+            }
+            .badge-payment {
+                background: #d4edda !important;
+                color: #155724 !important;
+            }
+            .currency-box {
+                border-color: #ddd !important;
+                background: #f5f5f5 !important;
+            }
+            .currency-box .total-debit {
+                color: #c92a2a !important;
+            }
+            .currency-box .total-credit {
+                color: #2b8a3e !important;
+            }
+            .currency-box .balance {
+                color: #b8860b !important;
+            }
+            .print-controls {
+                display: none !important;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: stretch;
+                border-radius: 30px;
+                padding: 15px 20px;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .nav-links button {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                padding: 25px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- ===== TOP NAV ===== -->
+        <nav class="top-nav">
+            <div class="logo">
+                <h1><i class="fas fa-plane-departure"></i> TAREK</h1>
+                <span>نظام إدارة تذاكر الطيران</span>
+            </div>
+            <div class="nav-links">
+                <button class="active" data-page="page-companies"><i class="fas fa-building"></i> الشركات</button>
+                <button data-page="page-transactions"><i class="fas fa-receipt"></i> المعاملات</button>
+                <button data-page="page-print"><i class="fas fa-print"></i> طباعة كشف</button>
+            </div>
+        </nav>
+
+        <!-- ===== TOAST ===== -->
+        <div class="toast" id="toast"></div>
+
+        <!-- ============================================================ -->
+        <!-- ===== PAGE 1: الشركات ===== -->
+        <!-- ============================================================ -->
+        <div class="page active" id="page-companies">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-building"></i> شركات الطيران
+                    <span style="font-size:0.8rem;color:#aaa;font-weight:400;margin-right:auto;">
+                        <span id="companyCount">0</span> شركة
+                    </span>
+                </div>
+
+                <div class="companies-grid" id="companiesGrid">
+                    <!-- ستضاف بواسطة JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- ===== PAGE 2: المعاملات ===== -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-transactions">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-receipt"></i> تسجيل المعاملات
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الشركة</label>
+                        <select id="transCompany"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع المعاملة</label>
+                        <select id="transType">
+                            <option value="اصدار تذكرة">اصدار تذكرة</option>
+                            <option value="غرامة">غرامة</option>
+                            <option value="تسليم دفعه">تسليم دفعه</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>العملة</label>
+                        <select id="transCurrency">
+                            <option value="دينار ليبي">دينار ليبي (LYD)</option>
+                            <option value="دولار">دولار ($)</option>
+                            <option value="يورو">يورو (€)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>الاسم</label>
+                        <input type="text" id="transName" placeholder="اسم المسافر" />
+                    </div>
+                    <div class="form-group">
+                        <label>الوجهة</label>
+                        <input type="text" id="transDest" placeholder="المدينة / الدولة" />
+                    </div>
+                    <div class="form-group">
+                        <label>رقم المستند</label>
+                        <input type="text" id="transDoc" placeholder="رقم التذكرة" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="transDate" />
+                    </div>
+                    <div class="form-group">
+                        <label>القيمة</label>
+                        <input type="number" id="transAmount" placeholder="المبلغ" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                        <label>ملاحظة</label>
+                        <input type="text" id="transNote" placeholder="اختياري" />
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveTransaction()">
+                        <i class="fas fa-check"></i> <span id="transBtnText">تأكيد المعاملة</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="resetTransForm()">
+                        <i class="fas fa-undo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </div>
+
+            <!-- جدول المعاملات -->
+            <div class="card">
+                <div class="card-title" style="font-size:1.2rem;">
+                    <i class="fas fa-list"></i> سجل المعاملات
+                    <span style="font-size:0.8rem;color:#aaa;font-weight:400;margin-right:auto;">
+                        <span id="transCount">0</span> معاملة
+                    </span>
+                </div>
+
+                <div class="filter-bar">
+                    <select id="filterCompany" onchange="renderTransactions()">
+                        <option value="all">جميع الشركات</option>
+                    </select>
+                    <select id="filterType" onchange="renderTransactions()">
+                        <option value="all">جميع المعاملات</option>
+                        <option value="اصدار تذكرة">تذكرة</option>
+                        <option value="غرامة">غرامة</option>
+                        <option value="تسليم دفعه">تسليم دفعه</option>
+                    </select>
+                    <select id="filterCurrency" onchange="renderTransactions()">
+                        <option value="all">جميع العملات</option>
+                        <option value="دينار ليبي">دينار ليبي</option>
+                        <option value="دولار">دولار</option>
+                        <option value="يورو">يورو</option>
+                    </select>
+                    <input type="text" id="filterSearch" placeholder="بحث..." oninput="renderTransactions()" />
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الشركة</th>
+                                <th>المعاملة</th>
+                                <th>العملة</th>
+                                <th>الاسم</th>
+                                <th>الوجهة</th>
+                                <th>المستند</th>
+                                <th>التاريخ</th>
+                                <th>القيمة</th>
+                                <th>ملاحظة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transTableBody">
+                            <tr><td colspan="11" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- ===== PAGE 3: الطباعة ===== -->
+        <!-- ============================================================ -->
+        <div class="page" id="page-print">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-print"></i> طباعة كشف حساب الشركة
+                </div>
+
+                <div class="print-controls">
+                    <div class="form-group">
+                        <label>اختر الشركة</label>
+                        <select id="printCompanySelect" onchange="refreshPrint()">
+                            <option value="all">جميع الشركات</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع المعاملة</label>
+                        <select id="printTypeFilter" onchange="refreshPrint()">
+                            <option value="all">الكل</option>
+                            <option value="اصدار تذكرة">تذاكر</option>
+                            <option value="غرامة">غرامات</option>
+                            <option value="تسليم دفعه">تسليمات</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="print-preview" id="printPreview">
+                    <!-- ملخص العملات -->
+                    <div class="currency-summary" id="currencySummary">
+                        <!-- ستضاف بواسطة JS -->
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الشركة</th>
+                                    <th>المعاملة</th>
+                                    <th>العملة</th>
+                                    <th>الاسم</th>
+                                    <th>الوجهة</th>
+                                    <th>المستند</th>
+                                    <th>التاريخ</th>
+                                    <th>القيمة</th>
+                                    <th>ملاحظة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="printTableBody">
+                                <tr><td colspan="10" style="text-align:center;padding:30px;color:#666;">لا توجد بيانات</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="print-btn-group">
+                        <button class="btn btn-success" onclick="printStatement()">
+                            <i class="fas fa-print"></i> طباعة الكشف
+                        </button>
+                        <button class="btn btn-outline" onclick="refreshPrint()">
+                            <i class="fas fa-sync"></i> تحديث
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- ===== MODAL: إضافة شركة ===== -->
+        <!-- ============================================================ -->
+        <div class="modal-overlay" id="companyModal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                <h2><i class="fas fa-plus-circle"></i> إضافة شركة جديدة</h2>
+
+                <div class="form-group">
+                    <label>اسم الشركة <span style="color:#ff6b6b;">*</span></label>
+                    <input type="text" id="modalCompanyName" placeholder="أدخل اسم الشركة" />
+                </div>
+
+                <div style="margin: 20px 0 10px 0; color: #ccd6f0; font-weight: 600; font-size: 0.9rem;">
+                    <i class="fas fa-balance-scale"></i> الرصيد الافتتاحي (اختياري)
+                </div>
+
+                <div class="balance-btns">
+                    <button id="modalDebitBtn" onclick="setBalanceType('debit')" class="active-debit">
+                        <i class="fas fa-arrow-down"></i> مدين
+                    </button>
+                    <button id="modalCreditBtn" onclick="setBalanceType('credit')">
+                        <i class="fas fa-arrow-up"></i> دائن
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>القيمة</label>
+                    <input type="number" id="modalBalanceAmount" placeholder="0.00" step="0.01" />
+                </div>
+
+                <div class="form-group">
+                    <label>العملة</label>
+                    <select id="modalBalanceCurrency">
+                        <option value="دينار ليبي">دينار ليبي (LYD)</option>
+                        <option value="دولار">دولار ($)</option>
+                        <option value="يورو">يورو (€)</option>
+                    </select>
+                </div>
+
+                <button class="btn-submit" onclick="saveCompanyFromModal()">
+                    <i class="fas fa-save"></i> إضافة الشركة
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // =============================================================
+        // DATA
+        // =============================================================
+        let companies = [];
+        let transactions = [];
+        let nextTransId = 1;
+        let editingTransId = null;
+        let balanceType = 'debit'; // 'debit' or 'credit'
+
+        // =============================================================
+        // LOCAL STORAGE
+        // =============================================================
+        function loadData() {
+            const c = localStorage.getItem('tarek_companies');
+            const t = localStorage.getItem('tarek_transactions');
+            if (c) {
+                try { companies = JSON.parse(c); } catch (e) { companies = []; }
+            }
+            if (t) {
+                try {
+                    transactions = JSON.parse(t);
+                    if (transactions.length > 0) {
+                        nextTransId = Math.max(...transactions.map(x => x.id)) + 1;
+                    }
+                } catch (e) { transactions = []; }
+            }
+            if (companies.length === 0) {
+                // نضيف شركة نموذجية
+                companies = [{
+                    id: 1,
+                    name: 'الخطوط العربية',
+                    balance: 0,
+                    balanceType: 'debit',
+                    balanceCurrency: 'دولار'
+                }];
+                saveCompanies();
+            }
+        }
+
+        function saveCompanies() {
+            localStorage.setItem('tarek_companies', JSON.stringify(companies));
+        }
+
+        function saveTransactions() {
+            localStorage.setItem('tarek_transactions', JSON.stringify(transactions));
+        }
+
+        // =============================================================
+        // TOAST
+        // =============================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // =============================================================
+        // NAVIGATION
+        // =============================================================
+        document.querySelectorAll('.nav-links button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const pageId = this.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                if (pageId === 'page-companies') renderCompanies();
+                if (pageId === 'page-transactions') { populateCompanySelect();
+                    renderTransactions(); }
+                if (pageId === 'page-print') { populatePrintSelect();
+                    refreshPrint(); }
+            });
+        });
+
+        // =============================================================
+        // MODAL
+        // =============================================================
+        function openModal() {
+            document.getElementById('companyModal').classList.add('active');
+            document.getElementById('modalCompanyName').value = '';
+            document.getElementById('modalBalanceAmount').value = '';
+            setBalanceType('debit');
+        }
+
+        function closeModal() {
+            document.getElementById('companyModal').classList.remove('active');
+        }
+
+        function setBalanceType(type) {
+            balanceType = type;
+            const debitBtn = document.getElementById('modalDebitBtn');
+            const creditBtn = document.getElementById('modalCreditBtn');
+            debitBtn.className = '';
+            creditBtn.className = '';
+            if (type === 'debit') {
+                debitBtn.classList.add('active-debit');
+            } else {
+                creditBtn.classList.add('active-credit');
+            }
+        }
+
+        function saveCompanyFromModal() {
+            const name = document.getElementById('modalCompanyName').value.trim();
+            if (!name) {
+                showToast('الرجاء إدخال اسم الشركة');
+                return;
+            }
+            if (companies.some(c => c.name === name)) {
+                showToast('هذه الشركة موجودة بالفعل');
+                return;
+            }
+
+            const balanceAmount = parseFloat(document.getElementById('modalBalanceAmount').value) || 0;
+            const balanceCurrency = document.getElementById('modalBalanceCurrency').value;
+
+            const newCompany = {
+                id: Date.now(),
+                name: name,
+                balance: balanceAmount,
+                balanceType: balanceType,
+                balanceCurrency: balanceCurrency
+            };
+
+            companies.push(newCompany);
+            saveCompanies();
+            renderCompanies();
+            closeModal();
+            showToast('✅ تم إضافة الشركة "' + name + '"');
+        }
+
+        // =============================================================
+        // PAGE 1: الشركات
+        // =============================================================
+        function renderCompanies() {
+            const grid = document.getElementById('companiesGrid');
+            if (companies.length === 0) {
+                grid.innerHTML = `
+                    <div class="btn-add-company" onclick="openModal()">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>إضافة شركة جديدة</span>
+                    </div>
+                `;
+                document.getElementById('companyCount').textContent = '0';
+                return;
+            }
+
+            let html = '';
+            companies.forEach((company, index) => {
+                const trans = transactions.filter(t => t.company === company.name);
+                const totalDebit = trans.filter(t => t.type === 'اصدار تذكرة' || t.type === 'غرامة')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                const totalCredit = trans.filter(t => t.type === 'تسليم دفعه')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                const balance = totalDebit - totalCredit + (company.balanceType === 'debit' ? company.balance : -company
+                .balance);
+
+                html += `
+                    <div class="company-card">
+                        <button class="del-btn" onclick="deleteCompany('${company.name}')" title="حذف الشركة"><i class="fas fa-times"></i></button>
+                        <span class="icon"><i class="fas fa-plane"></i></span>
+                        <div class="name">${company.name}</div>
+                        <div class="balance-info">
+                            <div>المعاملات: ${trans.length}</div>
+                            <div>
+                                <span class="debit">مدين: $${totalDebit.toFixed(2)}</span> |
+                                <span class="credit">دائن: $${totalCredit.toFixed(2)}</span>
+                            </div>
+                            <div style="color:#ffd700;font-weight:700;margin-top:4px;">
+                                الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} $${Math.abs(balance).toFixed(2)}
+                            </div>
+                            ${company.balance > 0 ? `<div style="font-size:0.7rem;color:#888;">رصيد افتتاحي: ${company.balanceType === 'debit' ? 'مدين' : 'دائن'} ${company.balance} ${company.balanceCurrency}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // زر إضافة شركة
+            html += `
+                <div class="btn-add-company" onclick="openModal()">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة شركة جديدة</span>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+            document.getElementById('companyCount').textContent = companies.length;
+            populateCompanySelect();
+            populatePrintSelect();
+        }
+
+        function deleteCompany(name) {
+            if (!confirm(`هل تريد حذف الشركة "${name}" وجميع معاملاتها؟`)) return;
+            transactions = transactions.filter(t => t.company !== name);
+            saveTransactions();
+            companies = companies.filter(c => c.name !== name);
+            saveCompanies();
+            renderCompanies();
+            renderTransactions();
+            showToast('🗑️ تم حذف الشركة ومعاملاتها');
+        }
+
+        // =============================================================
+        // PAGE 2: المعاملات
+        // =============================================================
+        function populateCompanySelect() {
+            const sel = document.getElementById('transCompany');
+            const current = sel.value;
+            sel.innerHTML = '';
+            companies.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                sel.appendChild(opt);
+            });
+            if (companies.length === 0) {
+                sel.innerHTML = '<option value="">لا توجد شركات</option>';
+            } else if (companies.some(c => c.name === current)) {
+                sel.value = current;
+            }
+
+            // فلتر الشركات
+            const filterSel = document.getElementById('filterCompany');
+            const fCurrent = filterSel.value;
+            filterSel.innerHTML = '<option value="all">جميع الشركات</option>';
+            companies.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                filterSel.appendChild(opt);
+            });
+            if (companies.some(c => c.name === fCurrent)) filterSel.value = fCurrent;
+        }
+
+        function resetTransForm() {
+            document.getElementById('transName').value = '';
+            document.getElementById('transDest').value = '';
+            document.getElementById('transDoc').value = '';
+            document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('transAmount').value = '';
+            document.getElementById('transNote').value = '';
+            document.getElementById('transCurrency').value = 'دولار';
+            editingTransId = null;
+            document.getElementById('transBtnText').textContent = 'تأكيد المعاملة';
+        }
+
+        function saveTransaction() {
+            const company = document.getElementById('transCompany').value;
+            const type = document.getElementById('transType').value;
+            const currency = document.getElementById('transCurrency').value;
+            const name = document.getElementById('transName').value.trim();
+            const dest = document.getElementById('transDest').value.trim();
+            const doc = document.getElementById('transDoc').value.trim();
+            const date = document.getElementById('transDate').value;
+            const amount = parseFloat(document.getElementById('transAmount').value);
+            const note = document.getElementById('transNote').value.trim();
+
+            if (!company || companies.length === 0) { showToast('الرجاء إضافة شركة أولاً'); return; }
+            if (!name || !dest || !doc || !date || isNaN(amount) || amount <= 0) {
+                showToast('يرجى تعبئة جميع الحقول الأساسية');
+                return;
+            }
+
+            if (editingTransId !== null) {
+                const idx = transactions.findIndex(t => t.id === editingTransId);
+                if (idx !== -1) {
+                    transactions[idx] = { ...transactions[idx], company, type, currency, name, destination: dest, doc,
+                        date, amount, note };
+                }
+                editingTransId = null;
+                document.getElementById('transBtnText').textContent = 'تأكيد المعاملة';
+                showToast('✅ تم تحديث المعاملة');
+            } else {
+                const newT = {
+                    id: nextTransId++,
+                    company,
+                    type,
+                    currency,
+                    name,
+                    destination: dest,
+                    doc,
+                    date,
+                    amount,
+                    note
+                };
+                transactions.push(newT);
+                showToast('✅ تم إضافة المعاملة');
+            }
+
+            saveTransactions();
+            renderTransactions();
+            resetTransForm();
+            renderCompanies();
+        }
+
+        function renderTransactions() {
+            const filterCompany = document.getElementById('filterCompany').value;
+            const filterType = document.getElementById('filterType').value;
+            const filterCurrency = document.getElementById('filterCurrency').value;
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+
+            let filtered = transactions.filter(t => {
+                const mc = filterCompany === 'all' || t.company === filterCompany;
+                const mt = filterType === 'all' || t.type === filterType;
+                const mcur = filterCurrency === 'all' || t.currency === filterCurrency;
+                const ms = t.name.toLowerCase().includes(search) ||
+                    t.destination.toLowerCase().includes(search) ||
+                    t.doc.toLowerCase().includes(search) ||
+                    t.company.toLowerCase().includes(search);
+                return mc && mt && mcur && ms;
+            });
+
+            filtered.sort((a, b) => b.id - a.id);
+
+            const tbody = document.getElementById('transTableBody');
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    `<tr><td colspan="11" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>`;
+                document.getElementById('transCount').textContent = '0';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((t, i) => {
+                const badgeClass = t.type === 'اصدار تذكرة' ? 'badge-issue' :
+                    t.type === 'غرامة' ? 'badge-fine' : 'badge-payment';
+                const sign = t.type === 'تسليم دفعه' ? '-' : '+';
+                const color = t.type === 'تسليم دفعه' ? '#51cf66' : (t.type === 'غرامة' ? '#ff6b6b' : '#ffd700');
+                const currencySymbol = t.currency === 'دينار ليبي' ? 'LYD' :
+                    t.currency === 'دولار' ? '$' : '€';
+                html += `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td><strong>${t.company}</strong></td>
+                        <td><span class="badge ${badgeClass}">${t.type}</span></td>
+                        <td>${t.currency}</td>
+                        <td>${t.name}</td>
+                        <td>${t.destination}</td>
+                        <td>${t.doc}</td>
+                        <td>${t.date}</td>
+                        <td style="color:${color};font-weight:600;">${sign}${currencySymbol}${t.amount.toFixed(2)}</td>
+                        <td>${t.note || '-'}</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-sm btn-edit" onclick="editTransaction(${t.id})"><i class="fas fa-pen"></i></button>
+                                <button class="btn-sm btn-del" onclick="deleteTransaction(${t.id})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('transCount').textContent = filtered.length;
+        }
+
+        function editTransaction(id) {
+            const t = transactions.find(x => x.id === id);
+            if (!t) return;
+            document.getElementById('transCompany').value = t.company;
+            document.getElementById('transType').value = t.type;
+            document.getElementById('transCurrency').value = t.currency || 'دولار';
+            document.getElementById('transName').value = t.name;
+            document.getElementById('transDest').value = t.destination;
+            document.getElementById('transDoc').value = t.doc;
+            document.getElementById('transDate').value = t.date;
+            document.getElementById('transAmount').value = t.amount;
+            document.getElementById('transNote').value = t.note || '';
+            editingTransId = id;
+            document.getElementById('transBtnText').textContent = 'تحديث المعاملة';
+            document.getElementById('page-transactions').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteTransaction(id) {
+            if (!confirm('هل تريد حذف هذه المعاملة؟')) return;
+            transactions = transactions.filter(t => t.id !== id);
+            saveTransactions();
+            renderTransactions();
+            renderCompanies();
+            if (editingTransId === id) {
+                editingTransId = null;
+                document.getElementById('transBtnText').textContent = 'تأكيد المعاملة';
+                resetTransForm();
+            }
+            showToast('🗑️ تم حذف المعاملة');
+        }
+
+        // =============================================================
+        // PAGE 3: الطباعة
+        // =============================================================
+        function populatePrintSelect() {
+            const sel = document.getElementById('printCompanySelect');
+            const current = sel.value;
+            sel.innerHTML = '<option value="all">جميع الشركات</option>';
+            companies.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                sel.appendChild(opt);
+            });
+            if (companies.some(c => c.name === current)) sel.value = current;
+        }
+
+        function refreshPrint() {
+            const companyFilter = document.getElementById('printCompanySelect').value;
+            const typeFilter = document.getElementById('printTypeFilter').value;
+
+            let filtered = transactions;
+            if (companyFilter !== 'all') {
+                filtered = filtered.filter(t => t.company === companyFilter);
+            }
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(t => t.type === typeFilter);
+            }
+
+            if (filtered.length === 0) {
+                document.getElementById('printTableBody').innerHTML =
+                    `<tr><td colspan="10" style="text-align:center;padding:30px;color:#666;">لا توجد معاملات</td></tr>`;
+                document.getElementById('currencySummary').innerHTML =
+                    `<div style="text-align:center;padding:20px;color:#666;">لا توجد بيانات</div>`;
+                return;
+            }
+
+            const sorted = [...filtered].sort((a, b) => a.id - b.id);
+
+            // ===== ملخص العملات =====
+            const currencies = ['دينار ليبي', 'دولار', 'يورو'];
+            let summaryHTML = '';
+
+            currencies.forEach(cur => {
+                const curTrans = filtered.filter(t => t.currency === cur);
+                if (curTrans.length === 0) return;
+
+                const totalDebit = curTrans.filter(t => t.type === 'اصدار تذكرة' || t.type === 'غرامة')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                const totalCredit = curTrans.filter(t => t.type === 'تسليم دفعه')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                const balance = totalDebit - totalCredit;
+
+                const symbol = cur === 'دينار ليبي' ? 'LYD' : cur === 'دولار' ? '$' : '€';
+                summaryHTML += `
+                    <div class="currency-box">
+                        <div class="currency-icon">${cur === 'دينار ليبي' ? '🇱🇾' : cur === 'دولار' ? '🇺🇸' : '🇪🇺'}</div>
+                        <div class="currency-name">${cur}</div>
+                        <div><span class="total-debit">مدين: ${symbol}${totalDebit.toFixed(2)}</span></div>
+                        <div><span class="total-credit">دائن: ${symbol}${totalCredit.toFixed(2)}</span></div>
+                        <div class="balance">الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('currencySummary').innerHTML = summaryHTML ||
+                `<div style="text-align:center;padding:20px;color:#666;">لا توجد معاملات</div>`;
+
+            // ===== الجدول =====
+            let rows = '';
+            sorted.forEach((t, i) => {
+                const isDebit = (t.type === 'اصدار تذكرة' || t.type === 'غرامة');
+                const symbol = t.currency === 'دينار ليبي' ? 'LYD' :
+                    t.currency === 'دولار' ? '$' : '€';
+                const sign = isDebit ? '+' : '-';
+                const color = isDebit ? '#d63031' : '#00b894';
+                rows += `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${t.company}</td>
+                        <td>${t.type}</td>
+                        <td>${t.currency}</td>
+                        <td>${t.name}</td>
+                        <td>${t.destination}</td>
+                        <td>${t.doc}</td>
+                        <td>${t.date}</td>
+                        <td style="color:${color};font-weight:600;">${sign}${symbol}${t.amount.toFixed(2)}</td>
+                        <td>${t.note || ''}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('printTableBody').innerHTML = rows;
+        }
+
+        function printStatement() {
+            if (transactions.length === 0) {
+                showToast('لا توجد معاملات للطباعة');
+                return;
+            }
+            window.print();
+        }
+
+        // =============================================================
+        // INIT
+        // =============================================================
+        loadData();
+        renderCompanies();
+        populateCompanySelect();
+        renderTransactions();
+        resetTransForm();
+        populatePrintSelect();
+        refreshPrint();
+        document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+
+        // أحداث الفلتر
+        document.getElementById('filterCompany').addEventListener('change', renderTransactions);
+        document.getElementById('filterType').addEventListener('change', renderTransactions);
+        document.getElementById('filterCurrency').addEventListener('change', renderTransactions);
+        document.getElementById('filterSearch').addEventListener('input', renderTransactions);
+
+        console.log('✅ TAREK جاهز!');
+        console.log('البيانات فارغة تماماً، ابدأ بإضافة شركات ومعاملات.');
+    </script>
+
+</body>
+</html>
