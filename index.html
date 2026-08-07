@@ -774,6 +774,11 @@
                 border-bottom: 2px solid #ddd;
                 padding-bottom: 8px;
             }
+            .summary-footer {
+                margin-top: 20px;
+                border-top: 2px solid #ddd;
+                padding-top: 15px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1604,7 +1609,7 @@
         }
 
         // =============================================================
-        // PAGE 3: الطباعة (الكشف مع العملات)
+        // PAGE 3: الطباعة (الكشف مع العملات - الإجمالي في الأسفل)
         // =============================================================
         function populatePrintSelect() {
             const sel = document.getElementById('printCompanySelect');
@@ -1688,17 +1693,6 @@
                         <h3 style="color:#0a1628;border-bottom:3px solid #ffd700;padding-bottom:10px;margin-bottom:15px;font-size:1.3rem;">
                             ${flag} ${getCurrencyName(currency)} (${symbol})
                         </h3>
-                        <div style="display:flex;gap:15px;margin-bottom:15px;flex-wrap:wrap;">
-                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
-                                <span style="color:#d63031;font-weight:700;">مدين: ${symbol}${totalDebit.toFixed(2)}</span>
-                            </div>
-                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
-                                <span style="color:#00b894;font-weight:700;">دائن: ${symbol}${totalCredit.toFixed(2)}</span>
-                            </div>
-                            <div style="background:#0a1628;padding:8px 20px;border-radius:8px;color:#ffd700;font-weight:700;font-size:0.9rem;">
-                                الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
-                            </div>
-                        </div>
                         <div style="overflow-x:auto;">
                             <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
                                 <thead>
@@ -1719,18 +1713,21 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- الإجمالي في الأسفل -->
+                        <div style="display:flex;gap:15px;margin-top:15px;flex-wrap:wrap;border-top:2px solid #e0e0e0;padding-top:12px;">
+                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
+                                <span style="color:#d63031;font-weight:700;">إجمالي المدين: ${symbol}${totalDebit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
+                                <span style="color:#00b894;font-weight:700;">إجمالي الدائن: ${symbol}${totalCredit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#0a1628;padding:8px 20px;border-radius:8px;color:#ffd700;font-weight:700;font-size:0.9rem;">
+                                الرصيد النهائي: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
+                            </div>
+                        </div>
                     </div>
                 `;
             });
-
-            // إجمالي عام - نعرضه بدون عملة محددة لأنها مختلطة
-            let grandTotalDebit = 0,
-                grandTotalCredit = 0;
-            sorted.forEach(t => {
-                if (t.type === 'اصدار تذكرة' || t.type === 'غرامة') grandTotalDebit += t.amount;
-                else grandTotalCredit += t.amount;
-            });
-            const grandBalance = grandTotalDebit - grandTotalCredit;
 
             preview.innerHTML = `
                 <div style="background:#fff;padding:25px;border-radius:20px;color:#222;">
@@ -1739,23 +1736,6 @@
                             ✈️ TAREK - كشف حساب شامل
                         </h1>
                         <span style="color:#666;font-size:0.9rem;">${new Date().toLocaleDateString('ar-EG')}</span>
-                    </div>
-
-                    <div style="background:#f8f9fa;border-radius:12px;padding:15px;margin-bottom:20px;border:1px solid #e0e0e0;">
-                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
-                            <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
-                                📊 إجمالي المدين (تذاكر + غرامات)
-                            </div>
-                            <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
-                                📊 إجمالي الدائن (استرجاع + تسليم)
-                            </div>
-                            <div style="background:#ffd700;padding:10px 25px;border-radius:10px;color:#0a1628;font-weight:700;">
-                                🏦 الرصيد النهائي: ${grandBalance >= 0 ? 'مدين' : 'دائن'}
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:0.9rem;color:#555;">
-                            <span>⚠️ الإجمالي العام بعملات مختلفة - راجع تفاصيل كل عملة أعلاه</span>
-                        </div>
                     </div>
 
                     ${allSections}
@@ -1834,17 +1814,6 @@
                         <h3 style="color:#0a1628;border-bottom:2px solid #ffd700;padding-bottom:8px;margin-bottom:12px;font-size:1.2rem;">
                             ${flag} ${getCurrencyName(currency)} (${symbol})
                         </h3>
-                        <div style="display:flex;gap:15px;margin-bottom:12px;flex-wrap:wrap;">
-                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
-                                <span style="color:#d63031;font-weight:700;">مدين: ${symbol}${totalDebit.toFixed(2)}</span>
-                            </div>
-                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
-                                <span style="color:#00b894;font-weight:700;">دائن: ${symbol}${totalCredit.toFixed(2)}</span>
-                            </div>
-                            <div style="background:#0a1628;padding:6px 18px;border-radius:6px;color:#ffd700;font-weight:700;">
-                                الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
-                            </div>
-                        </div>
                         <table style="width:100%;border-collapse:collapse;font-size:0.75rem;">
                             <thead>
                                 <tr>
@@ -1863,6 +1832,18 @@
                                 ${rows}
                             </tbody>
                         </table>
+                        <!-- الإجمالي في الأسفل -->
+                        <div style="display:flex;gap:15px;margin-top:12px;flex-wrap:wrap;border-top:2px solid #e0e0e0;padding-top:10px;">
+                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
+                                <span style="color:#d63031;font-weight:700;">إجمالي المدين: ${symbol}${totalDebit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
+                                <span style="color:#00b894;font-weight:700;">إجمالي الدائن: ${symbol}${totalCredit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#0a1628;padding:6px 18px;border-radius:6px;color:#ffd700;font-weight:700;">
+                                الرصيد النهائي: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
+                            </div>
+                        </div>
                     </div>
                 `;
             });
@@ -1882,31 +1863,17 @@
                         table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
                         th { background: #f0f0f0; padding: 8px; text-align: right; border-bottom: 2px solid #ccc; }
                         td { padding: 6px 8px; border-bottom: 1px solid #e0e0e0; }
-                        .summary { display: flex; gap: 15px; flex-wrap: wrap; margin: 10px 0; }
+                        .summary-footer { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 12px; border-top: 2px solid #e0e0e0; padding-top: 10px; }
                         .summary-item { background: #f5f5f5; padding: 6px 18px; border-radius: 6px; }
                         .debit { color: #d63031; font-weight: 700; }
                         .credit { color: #00b894; font-weight: 700; }
-                        .balance-box { background: #0a1628; padding: 10px 20px; border-radius: 8px; color: #ffd700; font-weight: 700; display: inline-block; margin: 15px 0; font-size: 1.1rem; }
-                        .grand-total-box { background: #f8f9fa; padding: 12px 20px; border-radius: 10px; border: 1px solid #e0e0e0; margin: 10px 0; text-align: center; }
+                        .balance-box { background: #0a1628; padding: 6px 18px; border-radius: 6px; color: #ffd700; font-weight: 700; }
                     </style>
                 </head>
                 <body>
                     <div class="header">
                         <h1>✈️ TAREK - كشف حساب شامل</h1>
                         <span class="date">${new Date().toLocaleDateString('ar-EG')}</span>
-                    </div>
-
-                    <div class="grand-total-box">
-                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;font-weight:700;">
-                            <span style="color:#0a1628;">📊 إجمالي المدين (تذاكر + غرامات): <span style="color:#d63031;">بعملات مختلفة</span></span>
-                            <span style="color:#0a1628;">📊 إجمالي الدائن (استرجاع + تسليم): <span style="color:#00b894;">بعملات مختلفة</span></span>
-                            <span style="background:#0a1628;padding:4px 15px;border-radius:6px;color:#ffd700;">
-                                🏦 الرصيد النهائي: بعملات مختلفة
-                            </span>
-                        </div>
-                        <div style="margin-top:8px;font-size:0.85rem;color:#666;">
-                            ⚠️ الإجمالي العام بعملات مختلفة - راجع تفاصيل كل عملة أدناه
-                        </div>
                     </div>
 
                     ${allSections}
