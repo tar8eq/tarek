@@ -176,12 +176,12 @@
             background: linear-gradient(145deg, #1a2a4a, #0f1a30);
             border-radius: 40px;
             padding: 40px;
-            max-width: 600px;
-            width: 90%;
+            max-width: 650px;
+            width: 95%;
             border: 1px solid rgba(255, 215, 0, 0.15);
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
             position: relative;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
         }
 
@@ -249,6 +249,10 @@
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
         }
 
+        .modal-content .form-group select option {
+            background: #1a2a4a;
+        }
+
         .modal-content .btn-submit {
             width: 100%;
             padding: 16px;
@@ -271,75 +275,108 @@
         /* ===== ACTION BUTTONS ===== */
         .action-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             margin: 15px 0;
         }
 
         .action-card {
-            background: rgba(255, 255, 255, 0.04);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
             border: 2px solid rgba(255, 255, 255, 0.06);
             border-radius: 24px;
-            padding: 25px 20px;
+            padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+
+        .action-card:hover::before {
+            opacity: 1;
         }
 
         .action-card:hover {
             transform: translateY(-8px) scale(1.02);
-            border-color: #ffd700;
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .action-card .icon {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+            font-size: 3.2rem;
+            margin-bottom: 12px;
             display: block;
         }
 
         .action-card .label {
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #fff;
         }
 
         .action-card .sub {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #aaa;
             margin-top: 5px;
         }
 
+        .action-card.ticket {
+            border-color: rgba(255, 215, 0, 0.2);
+        }
         .action-card.ticket .icon {
             color: #ffd700;
         }
         .action-card.ticket:hover {
             border-color: #ffd700;
             background: rgba(255, 215, 0, 0.05);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.1);
         }
 
+        .action-card.fine {
+            border-color: rgba(255, 107, 107, 0.2);
+        }
         .action-card.fine .icon {
             color: #ff6b6b;
         }
         .action-card.fine:hover {
             border-color: #ff6b6b;
             background: rgba(255, 107, 107, 0.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.1);
         }
 
+        .action-card.refund {
+            border-color: rgba(77, 171, 247, 0.2);
+        }
         .action-card.refund .icon {
             color: #4dabf7;
         }
         .action-card.refund:hover {
             border-color: #4dabf7;
             background: rgba(77, 171, 247, 0.05);
+            box-shadow: 0 15px 40px rgba(77, 171, 247, 0.1);
         }
 
+        .action-card.payment {
+            border-color: rgba(81, 207, 102, 0.2);
+        }
         .action-card.payment .icon {
             color: #51cf66;
         }
         .action-card.payment:hover {
             border-color: #51cf66;
             background: rgba(81, 207, 102, 0.05);
+            box-shadow: 0 15px 40px rgba(81, 207, 102, 0.1);
         }
 
         /* ===== COMPANIES ===== */
@@ -483,7 +520,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
-            min-width: 900px;
+            min-width: 1000px;
         }
 
         thead {
@@ -509,7 +546,7 @@
         }
 
         .badge {
-            padding: 3px 16px;
+            padding: 4px 16px;
             border-radius: 60px;
             font-size: 0.7rem;
             font-weight: 700;
@@ -531,6 +568,16 @@
         .badge-payment {
             background: rgba(81, 207, 102, 0.2);
             color: #51cf66;
+        }
+
+        .currency-badge {
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            color: #aaa;
         }
 
         .action-btns {
@@ -716,6 +763,17 @@
             .print-controls {
                 display: none !important;
             }
+            .currency-section {
+                margin-bottom: 20px;
+                border: 1px solid #ddd !important;
+                border-radius: 10px;
+                padding: 15px;
+            }
+            .currency-section h3 {
+                color: #0b1424 !important;
+                border-bottom: 2px solid #ddd;
+                padding-bottom: 8px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -847,6 +905,12 @@
                         <option value="استرجاع">استرجاع</option>
                         <option value="تسليم دفعه">تسليم دفعه</option>
                     </select>
+                    <select id="filterCurrency" onchange="renderTransactions()">
+                        <option value="all">جميع العملات</option>
+                        <option value="دينار ليبي">دينار ليبي</option>
+                        <option value="دولار">دولار</option>
+                        <option value="يورو">يورو</option>
+                    </select>
                     <input type="text" id="filterSearch" placeholder="بحث..." oninput="renderTransactions()" />
                 </div>
 
@@ -857,6 +921,7 @@
                                 <th>#</th>
                                 <th>الشركة</th>
                                 <th>المعاملة</th>
+                                <th>العملة</th>
                                 <th>الاسم</th>
                                 <th>الوجهة</th>
                                 <th>المستند</th>
@@ -867,7 +932,7 @@
                             </tr>
                         </thead>
                         <tbody id="transTableBody">
-                            <tr><td colspan="10" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>
+                            <tr><td colspan="11" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -885,7 +950,7 @@
 
                 <div class="print-controls" style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">
                     <div class="form-group" style="flex:1;min-width:200px;">
-                        <label>اختر الشركة</label>
+                        <label style="color:#ccd6f0;font-weight:600;display:block;margin-bottom:6px;">اختر الشركة</label>
                         <select id="printCompanySelect" onchange="preparePrintData()" style="width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px 20px;color:#fff;font-size:1rem;outline:none;">
                             <option value="all">جميع الشركات</option>
                         </select>
@@ -932,26 +997,41 @@
                     <label>الشركة <span style="color:#ff6b6b;">*</span></label>
                     <select id="modalTransCompany"></select>
                 </div>
+
+                <div class="form-group">
+                    <label>العملة <span style="color:#ff6b6b;">*</span></label>
+                    <select id="modalTransCurrency">
+                        <option value="دينار ليبي">🇱🇾 دينار ليبي (LYD)</option>
+                        <option value="دولار">🇺🇸 دولار ($)</option>
+                        <option value="يورو">🇪🇺 يورو (€)</option>
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label>الاسم <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransName" placeholder="اسم المسافر" />
                 </div>
+
                 <div class="form-group">
                     <label>الوجهة <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransDest" placeholder="المدينة / الدولة" />
                 </div>
+
                 <div class="form-group">
                     <label>رقم المستند <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransDoc" placeholder="رقم التذكرة" />
                 </div>
+
                 <div class="form-group">
                     <label>التاريخ <span style="color:#ff6b6b;">*</span></label>
                     <input type="date" id="modalTransDate" />
                 </div>
+
                 <div class="form-group">
                     <label>القيمة <span style="color:#ff6b6b;">*</span></label>
                     <input type="number" id="modalTransAmount" placeholder="المبلغ" step="0.01" />
                 </div>
+
                 <div class="form-group">
                     <label>ملاحظة</label>
                     <input type="text" id="modalTransNote" placeholder="اختياري" />
@@ -1221,6 +1301,7 @@
             document.getElementById('modalTransDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('modalTransAmount').value = '';
             document.getElementById('modalTransNote').value = '';
+            document.getElementById('modalTransCurrency').value = 'دينار ليبي';
 
             populateCompanySelect();
             openModal('transactionModal');
@@ -1228,6 +1309,7 @@
 
         function saveTransactionFromModal() {
             const company = document.getElementById('modalTransCompany').value;
+            const currency = document.getElementById('modalTransCurrency').value;
             const name = document.getElementById('modalTransName').value.trim();
             const dest = document.getElementById('modalTransDest').value.trim();
             const doc = document.getElementById('modalTransDoc').value.trim();
@@ -1245,6 +1327,7 @@
                 id: nextTransId++,
                 company,
                 type: currentTransactionType,
+                currency,
                 name,
                 destination: dest,
                 doc,
@@ -1295,7 +1378,8 @@
             tickets.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t.id;
-                opt.textContent = `${t.doc} - ${t.name} - ${t.destination} ($${t.amount})`;
+                const symbol = t.currency === 'دينار ليبي' ? 'LYD' : t.currency === 'دولار' ? '$' : '€';
+                opt.textContent = `${t.doc} - ${t.name} - ${t.destination} (${symbol}${t.amount})`;
                 select.appendChild(opt);
             });
         }
@@ -1318,6 +1402,7 @@
                 id: nextTransId++,
                 company: company,
                 type: 'استرجاع',
+                currency: ticket.currency,
                 name: ticket.name + ' (استرجاع)',
                 destination: ticket.destination,
                 doc: ticket.doc + '-R',
@@ -1341,16 +1426,18 @@
         function renderTransactions() {
             const filterCompany = document.getElementById('filterCompany').value;
             const filterType = document.getElementById('filterType').value;
+            const filterCurrency = document.getElementById('filterCurrency').value;
             const search = document.getElementById('filterSearch').value.toLowerCase();
 
             let filtered = transactions.filter(t => {
                 const mc = filterCompany === 'all' || t.company === filterCompany;
                 const mt = filterType === 'all' || t.type === filterType;
+                const mcur = filterCurrency === 'all' || t.currency === filterCurrency;
                 const ms = t.name.toLowerCase().includes(search) ||
                     t.destination.toLowerCase().includes(search) ||
                     t.doc.toLowerCase().includes(search) ||
                     t.company.toLowerCase().includes(search);
-                return mc && mt && ms;
+                return mc && mt && mcur && ms;
             });
 
             filtered.sort((a, b) => b.id - a.id);
@@ -1358,7 +1445,7 @@
             const tbody = document.getElementById('transTableBody');
             if (filtered.length === 0) {
                 tbody.innerHTML =
-                    `<tr><td colspan="10" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>`;
+                    `<tr><td colspan="11" style="text-align:center;padding:40px;color:#666;">لا توجد معاملات</td></tr>`;
                 document.getElementById('transCount').textContent = '0';
                 return;
             }
@@ -1373,16 +1460,19 @@
                     t.type === 'غرامة' ? '#ff6b6b' :
                     t.type === 'استرجاع' ? '#4dabf7' : '#51cf66';
                 const refundBadge = t.refunded ? ' 🔄' : '';
+                const symbol = t.currency === 'دينار ليبي' ? 'LYD' :
+                    t.currency === 'دولار' ? '$' : '€';
                 html += `
                     <tr>
                         <td>${i+1}</td>
                         <td><strong>${t.company}</strong></td>
                         <td><span class="badge ${badgeClass}">${t.type}${refundBadge}</span></td>
+                        <td><span class="currency-badge">${t.currency}</span></td>
                         <td>${t.name}</td>
                         <td>${t.destination}</td>
                         <td>${t.doc}</td>
                         <td>${t.date}</td>
-                        <td style="color:${color};font-weight:600;">${sign}$${t.amount.toFixed(2)}</td>
+                        <td style="color:${color};font-weight:600;">${sign}${symbol}${t.amount.toFixed(2)}</td>
                         <td>${t.note || '-'}</td>
                         <td>
                             <div class="action-btns">
@@ -1412,6 +1502,7 @@
             title.innerHTML = `<i class="fas ${icons[t.type] || 'fa-plus-circle'}"></i> تعديل: ${t.type}`;
 
             document.getElementById('modalTransCompany').value = t.company;
+            document.getElementById('modalTransCurrency').value = t.currency || 'دينار ليبي';
             document.getElementById('modalTransName').value = t.name;
             document.getElementById('modalTransDest').value = t.destination;
             document.getElementById('modalTransDoc').value = t.doc;
@@ -1431,6 +1522,7 @@
 
         function updateTransactionFromModal(id) {
             const company = document.getElementById('modalTransCompany').value;
+            const currency = document.getElementById('modalTransCurrency').value;
             const name = document.getElementById('modalTransName').value.trim();
             const dest = document.getElementById('modalTransDest').value.trim();
             const doc = document.getElementById('modalTransDoc').value.trim();
@@ -1446,7 +1538,8 @@
             const idx = transactions.findIndex(t => t.id === id);
             if (idx === -1) { showToast('المعاملة غير موجودة'); return; }
 
-            transactions[idx] = { ...transactions[idx], company, name, destination: dest, doc, date, amount, note };
+            transactions[idx] = { ...transactions[idx], company, currency, name, destination: dest, doc, date, amount,
+            note };
             saveTransactions();
             renderTransactions();
             renderCompanies();
@@ -1470,7 +1563,7 @@
         }
 
         // =============================================================
-        // PAGE 3: الطباعة (الكشف الجميل)
+        // PAGE 3: الطباعة (الكشف مع العملات)
         // =============================================================
         function populatePrintSelect() {
             const sel = document.getElementById('printCompanySelect');
@@ -1505,40 +1598,103 @@
             }
 
             const sorted = [...filtered].sort((a, b) => a.id - b.id);
-            let totalDebit = 0,
-                totalCredit = 0;
-            let rows = '';
 
-            sorted.forEach((t, i) => {
-                const isDebit = (t.type === 'اصدار تذكرة' || t.type === 'غرامة');
-                const amount = t.amount;
-                if (isDebit) totalDebit += amount;
-                else totalCredit += amount;
+            // تقسيم المعاملات حسب العملة
+            const currencies = ['دينار ليبي', 'دولار', 'يورو'];
+            let allSections = '';
 
-                const badge = t.type === 'اصدار تذكرة' ? 'تذكرة' :
-                    t.type === 'غرامة' ? 'غرامة' :
-                    t.type === 'استرجاع' ? 'استرجاع' : 'تسليم دفعه';
-                const color = isDebit ? '#d63031' : '#00b894';
-                const sign = isDebit ? '+' : '-';
-                rows += `
-                    <tr>
-                        <td>${i+1}</td>
-                        <td>${t.company}</td>
-                        <td>${badge}</td>
-                        <td>${t.name}</td>
-                        <td>${t.destination}</td>
-                        <td>${t.doc}</td>
-                        <td>${t.date}</td>
-                        <td style="color:${color};">${sign}$${amount.toFixed(2)}</td>
-                        <td>${t.note || ''}</td>
-                    </tr>
+            currencies.forEach(currency => {
+                const curTrans = sorted.filter(t => t.currency === currency);
+                if (curTrans.length === 0) return;
+
+                const symbol = currency === 'دينار ليبي' ? 'LYD' :
+                    currency === 'دولار' ? '$' : '€';
+                const flag = currency === 'دينار ليبي' ? '🇱🇾' :
+                    currency === 'دولار' ? '🇺🇸' : '🇪🇺';
+
+                let totalDebit = 0,
+                    totalCredit = 0;
+                let rows = '';
+
+                curTrans.forEach((t, i) => {
+                    const isDebit = (t.type === 'اصدار تذكرة' || t.type === 'غرامة');
+                    const amount = t.amount;
+                    if (isDebit) totalDebit += amount;
+                    else totalCredit += amount;
+
+                    const badge = t.type === 'اصدار تذكرة' ? 'تذكرة' :
+                        t.type === 'غرامة' ? 'غرامة' :
+                        t.type === 'استرجاع' ? 'استرجاع' : 'تسليم دفعه';
+                    const color = isDebit ? '#d63031' : '#00b894';
+                    const sign = isDebit ? '+' : '-';
+                    rows += `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td>${t.company}</td>
+                            <td>${badge}</td>
+                            <td>${t.name}</td>
+                            <td>${t.destination}</td>
+                            <td>${t.doc}</td>
+                            <td>${t.date}</td>
+                            <td style="color:${color};">${sign}${symbol}${amount.toFixed(2)}</td>
+                            <td>${t.note || ''}</td>
+                        </tr>
+                    `;
+                });
+
+                const balance = totalDebit - totalCredit;
+
+                allSections += `
+                    <div style="background:#fff;border-radius:16px;padding:20px;margin-bottom:25px;border:2px solid rgba(255,215,0,0.15);">
+                        <h3 style="color:#0a1628;border-bottom:3px solid #ffd700;padding-bottom:10px;margin-bottom:15px;font-size:1.3rem;">
+                            ${flag} ${currency}
+                        </h3>
+                        <div style="display:flex;gap:15px;margin-bottom:15px;flex-wrap:wrap;">
+                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
+                                <span style="color:#d63031;font-weight:700;">مدين: ${symbol}${totalDebit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
+                                <span style="color:#00b894;font-weight:700;">دائن: ${symbol}${totalCredit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#0a1628;padding:8px 20px;border-radius:8px;color:#ffd700;font-weight:700;font-size:0.9rem;">
+                                الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
+                            </div>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+                                <thead>
+                                    <tr>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">#</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">الشركة</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">المعاملة</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">الاسم</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">الوجهة</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">المستند</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">التاريخ</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">القيمة</th>
+                                        <th style="background:#f0f0f0;padding:10px;text-align:right;border-bottom:2px solid #ccc;">ملاحظة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 `;
             });
 
-            const balance = totalDebit - totalCredit;
+            // إجمالي عام
+            let grandTotalDebit = 0,
+                grandTotalCredit = 0;
+            sorted.forEach(t => {
+                if (t.type === 'اصدار تذكرة' || t.type === 'غرامة') grandTotalDebit += t.amount;
+                else grandTotalCredit += t.amount;
+            });
+            const grandBalance = grandTotalDebit - grandTotalCredit;
 
             preview.innerHTML = `
-                <div style="background:#fff;padding:30px;border-radius:20px;color:#222;">
+                <div style="background:#fff;padding:25px;border-radius:20px;color:#222;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
                         <h1 style="color:#0a1628;border-bottom:3px solid #ffd700;padding-bottom:10px;font-size:1.8rem;">
                             ✈️ TAREK - كشف حساب شامل
@@ -1546,48 +1702,23 @@
                         <span style="color:#666;font-size:0.9rem;">${new Date().toLocaleDateString('ar-EG')}</span>
                     </div>
 
-                    <div style="display:flex;gap:20px;margin:20px 0;flex-wrap:wrap;">
-                        <div style="background:#f5f5f5;padding:12px 25px;border-radius:10px;">
-                            إجمالي التذاكر + الغرامات (مدين): 
-                            <span style="color:#d63031;font-weight:700;">$${totalDebit.toFixed(2)}</span>
-                        </div>
-                        <div style="background:#f5f5f5;padding:12px 25px;border-radius:10px;">
-                            إجمالي الاسترجاعات + التسليمات (دائن): 
-                            <span style="color:#00b894;font-weight:700;">$${totalCredit.toFixed(2)}</span>
-                        </div>
-                        <div style="background:#0a1628;padding:12px 25px;border-radius:10px;color:#ffd700;">
-                            الرصيد النهائي (مدين): $${balance.toFixed(2)}
+                    <div style="background:#f8f9fa;border-radius:12px;padding:15px;margin-bottom:20px;border:1px solid #e0e0e0;">
+                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+                            <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
+                                إجمالي المدين (تذاكر + غرامات): $${grandTotalDebit.toFixed(2)}
+                            </div>
+                            <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
+                                إجمالي الدائن (استرجاع + تسليم): $${grandTotalCredit.toFixed(2)}
+                            </div>
+                            <div style="background:#ffd700;padding:10px 25px;border-radius:10px;color:#0a1628;font-weight:700;">
+                                الرصيد النهائي: ${grandBalance >= 0 ? 'مدين' : 'دائن'} $${Math.abs(grandBalance).toFixed(2)}
+                            </div>
                         </div>
                     </div>
 
-                    <div style="overflow-x:auto;">
-                        <table style="width:100%;border-collapse:collapse;margin-top:20px;font-size:0.85rem;">
-                            <thead>
-                                <tr>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">#</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">الشركة</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">المعاملة</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">الاسم</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">الوجهة</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">المستند</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">التاريخ</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">القيمة</th>
-                                    <th style="background:#f0f0f0;padding:12px;text-align:right;border-bottom:2px solid #ccc;">ملاحظة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows}
-                            </tbody>
-                        </table>
-                    </div>
+                    ${allSections}
 
-                    <div style="margin-top:30px;text-align:left;">
-                        <span style="font-size:1.4rem;padding:15px;background:#0a1628;color:#ffd700;border-radius:10px;display:inline-block;">
-                            الرصيد النهائي: $${balance.toFixed(2)}
-                        </span>
-                    </div>
-
-                    <div style="margin-top:30px;color:#999;font-size:0.8rem;border-top:1px solid #ddd;padding-top:15px;">
+                    <div style="margin-top:20px;color:#999;font-size:0.8rem;border-top:1px solid #ddd;padding-top:15px;text-align:center;">
                         تم إنشاء هذا الكشف بواسطة نظام TAREK · جميع الحقوق محفوظة © ${new Date().getFullYear()}
                     </div>
                 </div>
@@ -1607,59 +1738,122 @@
                 return;
             }
 
-            const printWindow = window.open('', '_blank', 'width=1000,height=800');
+            const printWindow = window.open('', '_blank', 'width=1100,height=900');
             const sorted = [...filtered].sort((a, b) => a.id - b.id);
 
-            let rows = '';
-            let totalDebit = 0,
-                totalCredit = 0;
-            sorted.forEach((t, i) => {
-                const isDebit = (t.type === 'اصدار تذكرة' || t.type === 'غرامة');
-                const amount = t.amount;
-                if (isDebit) totalDebit += amount;
-                else totalCredit += amount;
+            // تقسيم حسب العملة
+            const currencies = ['دينار ليبي', 'دولار', 'يورو'];
+            let allSections = '';
+            let grandTotalDebit = 0,
+                grandTotalCredit = 0;
 
-                const badge = t.type === 'اصدار تذكرة' ? 'تذكرة' :
-                    t.type === 'غرامة' ? 'غرامة' :
-                    t.type === 'استرجاع' ? 'استرجاع' : 'تسليم دفعه';
-                const color = isDebit ? '#d63031' : '#00b894';
-                const sign = isDebit ? '+' : '-';
-                rows += `
-                    <tr>
-                        <td>${i+1}</td>
-                        <td>${t.company}</td>
-                        <td>${badge}</td>
-                        <td>${t.name}</td>
-                        <td>${t.destination}</td>
-                        <td>${t.doc}</td>
-                        <td>${t.date}</td>
-                        <td style="color:${color};">${sign}$${amount.toFixed(2)}</td>
-                        <td>${t.note || ''}</td>
-                    </tr>
+            currencies.forEach(currency => {
+                const curTrans = sorted.filter(t => t.currency === currency);
+                if (curTrans.length === 0) return;
+
+                const symbol = currency === 'دينار ليبي' ? 'LYD' :
+                    currency === 'دولار' ? '$' : '€';
+                const flag = currency === 'دينار ليبي' ? '🇱🇾' :
+                    currency === 'دولار' ? '🇺🇸' : '🇪🇺';
+
+                let totalDebit = 0,
+                    totalCredit = 0;
+                let rows = '';
+
+                curTrans.forEach((t, i) => {
+                    const isDebit = (t.type === 'اصدار تذكرة' || t.type === 'غرامة');
+                    const amount = t.amount;
+                    if (isDebit) {
+                        totalDebit += amount;
+                        grandTotalDebit += amount;
+                    } else {
+                        totalCredit += amount;
+                        grandTotalCredit += amount;
+                    }
+
+                    const badge = t.type === 'اصدار تذكرة' ? 'تذكرة' :
+                        t.type === 'غرامة' ? 'غرامة' :
+                        t.type === 'استرجاع' ? 'استرجاع' : 'تسليم دفعه';
+                    const color = isDebit ? '#d63031' : '#00b894';
+                    const sign = isDebit ? '+' : '-';
+                    rows += `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td>${t.company}</td>
+                            <td>${badge}</td>
+                            <td>${t.name}</td>
+                            <td>${t.destination}</td>
+                            <td>${t.doc}</td>
+                            <td>${t.date}</td>
+                            <td style="color:${color};">${sign}${symbol}${amount.toFixed(2)}</td>
+                            <td>${t.note || ''}</td>
+                        </tr>
+                    `;
+                });
+
+                const balance = totalDebit - totalCredit;
+
+                allSections += `
+                    <div style="background:#fff;border-radius:12px;padding:15px;margin-bottom:20px;border:2px solid #e0e0e0;">
+                        <h3 style="color:#0a1628;border-bottom:2px solid #ffd700;padding-bottom:8px;margin-bottom:12px;font-size:1.2rem;">
+                            ${flag} ${currency}
+                        </h3>
+                        <div style="display:flex;gap:15px;margin-bottom:12px;flex-wrap:wrap;">
+                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
+                                <span style="color:#d63031;font-weight:700;">مدين: ${symbol}${totalDebit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
+                                <span style="color:#00b894;font-weight:700;">دائن: ${symbol}${totalCredit.toFixed(2)}</span>
+                            </div>
+                            <div style="background:#0a1628;padding:6px 18px;border-radius:6px;color:#ffd700;font-weight:700;">
+                                الرصيد: ${balance >= 0 ? 'مدين' : 'دائن'} ${symbol}${Math.abs(balance).toFixed(2)}
+                            </div>
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;font-size:0.75rem;">
+                            <thead>
+                                <tr>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">#</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">الشركة</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">المعاملة</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">الاسم</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">الوجهة</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">المستند</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">التاريخ</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">القيمة</th>
+                                    <th style="background:#f0f0f0;padding:8px;text-align:right;border-bottom:2px solid #ccc;">ملاحظة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
                 `;
             });
 
-            const balance = totalDebit - totalCredit;
+            const grandBalance = grandTotalDebit - grandTotalCredit;
 
             printWindow.document.write(`
                 <html dir="rtl">
                 <head>
                     <title>كشف حساب TAREK</title>
                     <style>
-                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 30px; background: #fff; color: #222; }
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; background: #fff; color: #222; }
                         h1 { color: #0a1628; border-bottom: 3px solid #ffd700; padding-bottom: 10px; }
                         .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
                         .date { color: #666; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th { background: #f0f0f0; padding: 12px; text-align: right; border-bottom: 2px solid #ccc; }
-                        td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; }
-                        .total-row { font-weight: bold; background: #f8f8f8; }
-                        .debit { color: #d63031; }
-                        .credit { color: #00b894; }
-                        .balance { font-size: 1.4rem; padding: 15px; background: #0a1628; color: #ffd700; border-radius: 10px; display: inline-block; }
-                        .footer { margin-top: 30px; color: #999; font-size: 0.8rem; border-top: 1px solid #ddd; padding-top: 15px; }
-                        .summary { display: flex; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
-                        .summary-item { background: #f5f5f5; padding: 10px 25px; border-radius: 10px; }
+                        .grand-total { background: #0a1628; padding: 12px 25px; border-radius: 10px; color: #ffd700; font-weight: 700; display: inline-block; margin: 10px 0; }
+                        .footer { margin-top: 25px; color: #999; font-size: 0.8rem; border-top: 1px solid #ddd; padding-top: 12px; text-align: center; }
+                        .currency-section { margin-bottom: 20px; }
+                        .currency-section h3 { color: #0a1628; border-bottom: 2px solid #ffd700; padding-bottom: 8px; margin-bottom: 12px; }
+                        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+                        th { background: #f0f0f0; padding: 8px; text-align: right; border-bottom: 2px solid #ccc; }
+                        td { padding: 6px 8px; border-bottom: 1px solid #e0e0e0; }
+                        .summary { display: flex; gap: 15px; flex-wrap: wrap; margin: 10px 0; }
+                        .summary-item { background: #f5f5f5; padding: 6px 18px; border-radius: 6px; }
+                        .debit { color: #d63031; font-weight: 700; }
+                        .credit { color: #00b894; font-weight: 700; }
+                        .balance-box { background: #0a1628; padding: 10px 20px; border-radius: 8px; color: #ffd700; font-weight: 700; display: inline-block; margin: 15px 0; font-size: 1.1rem; }
                     </style>
                 </head>
                 <body>
@@ -1667,28 +1861,27 @@
                         <h1>✈️ TAREK - كشف حساب شامل</h1>
                         <span class="date">${new Date().toLocaleDateString('ar-EG')}</span>
                     </div>
-                    <div class="summary">
-                        <div class="summary-item">إجمالي التذاكر + الغرامات (مدين): <span class="debit">$${totalDebit.toFixed(2)}</span></div>
-                        <div class="summary-item">إجمالي الاسترجاعات + التسليمات (دائن): <span class="credit">$${totalCredit.toFixed(2)}</span></div>
-                        <div class="summary-item" style="background:#0a1628; color:#ffd700;">الرصيد النهائي (مدين): $${balance.toFixed(2)}</div>
+
+                    <div style="background:#f8f9fa;border-radius:10px;padding:12px 20px;margin:15px 0;border:1px solid #e0e0e0;">
+                        <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+                            <span style="font-weight:700;">إجمالي المدين: <span class="debit">$${grandTotalDebit.toFixed(2)}</span></span>
+                            <span style="font-weight:700;">إجمالي الدائن: <span class="credit">$${grandTotalCredit.toFixed(2)}</span></span>
+                            <span style="font-weight:700;background:#0a1628;padding:4px 15px;border-radius:6px;color:#ffd700;">
+                                الرصيد النهائي: ${grandBalance >= 0 ? 'مدين' : 'دائن'} $${Math.abs(grandBalance).toFixed(2)}
+                            </span>
+                        </div>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th><th>الشركة</th><th>المعاملة</th><th>الاسم</th><th>الوجهة</th>
-                                <th>المستند</th><th>التاريخ</th><th>القيمة</th><th>ملاحظة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rows}
-                        </tbody>
-                    </table>
-                    <div style="margin-top:30px; text-align:left;">
-                        <span class="balance">الرصيد النهائي: $${balance.toFixed(2)}</span>
+
+                    ${allSections}
+
+                    <div class="balance-box">
+                        الرصيد النهائي: ${grandBalance >= 0 ? 'مدين' : 'دائن'} $${Math.abs(grandBalance).toFixed(2)}
                     </div>
+
                     <div class="footer">
                         تم إنشاء هذا الكشف بواسطة نظام TAREK · جميع الحقوق محفوظة © ${new Date().getFullYear()}
                     </div>
+
                     <script>
                         window.onload = function() { window.print(); }
                     <\/script>
@@ -1711,6 +1904,7 @@
         // أحداث الفلتر
         document.getElementById('filterCompany').addEventListener('change', renderTransactions);
         document.getElementById('filterType').addEventListener('change', renderTransactions);
+        document.getElementById('filterCurrency').addEventListener('change', renderTransactions);
         document.getElementById('filterSearch').addEventListener('input', renderTransactions);
 
         // تحديث التذاكر القابلة للاسترجاع عند تغيير الشركة
