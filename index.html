@@ -1087,6 +1087,30 @@
         let currentTransactionType = '';
 
         // =============================================================
+        // FUNCTIONS
+        // =============================================================
+        function getCurrencySymbol(currency) {
+            if (currency === 'دينار ليبي') return 'LYD';
+            if (currency === 'دولار') return '$';
+            if (currency === 'يورو') return '€';
+            return '';
+        }
+
+        function getCurrencyFlag(currency) {
+            if (currency === 'دينار ليبي') return '🇱🇾';
+            if (currency === 'دولار') return '🇺🇸';
+            if (currency === 'يورو') return '🇪🇺';
+            return '';
+        }
+
+        function getCurrencyName(currency) {
+            if (currency === 'دينار ليبي') return 'دينار ليبي';
+            if (currency === 'دولار') return 'دولار';
+            if (currency === 'يورو') return 'يورو';
+            return currency;
+        }
+
+        // =============================================================
         // LOCAL STORAGE
         // =============================================================
         function loadData() {
@@ -1174,7 +1198,7 @@
             }
 
             let html = '';
-            companies.forEach((company, index) => {
+            companies.forEach((company) => {
                 const trans = transactions.filter(t => t.company === company.name);
                 const totalDebit = trans.filter(t => t.type === 'اصدار تذكرة' || t.type === 'غرامة')
                     .reduce((sum, t) => sum + t.amount, 0);
@@ -1378,7 +1402,7 @@
             tickets.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t.id;
-                const symbol = t.currency === 'دينار ليبي' ? 'LYD' : t.currency === 'دولار' ? '$' : '€';
+                const symbol = getCurrencySymbol(t.currency);
                 opt.textContent = `${t.doc} - ${t.name} - ${t.destination} (${symbol}${t.amount})`;
                 select.appendChild(opt);
             });
@@ -1460,14 +1484,13 @@
                     t.type === 'غرامة' ? '#ff6b6b' :
                     t.type === 'استرجاع' ? '#4dabf7' : '#51cf66';
                 const refundBadge = t.refunded ? ' 🔄' : '';
-                const symbol = t.currency === 'دينار ليبي' ? 'LYD' :
-                    t.currency === 'دولار' ? '$' : '€';
+                const symbol = getCurrencySymbol(t.currency);
                 html += `
                     <tr>
                         <td>${i+1}</td>
                         <td><strong>${t.company}</strong></td>
                         <td><span class="badge ${badgeClass}">${t.type}${refundBadge}</span></td>
-                        <td><span class="currency-badge">${t.currency}</span></td>
+                        <td><span class="currency-badge">${getCurrencyFlag(t.currency)} ${t.currency}</span></td>
                         <td>${t.name}</td>
                         <td>${t.destination}</td>
                         <td>${t.doc}</td>
@@ -1539,7 +1562,7 @@
             if (idx === -1) { showToast('المعاملة غير موجودة'); return; }
 
             transactions[idx] = { ...transactions[idx], company, currency, name, destination: dest, doc, date, amount,
-            note };
+                note };
             saveTransactions();
             renderTransactions();
             renderCompanies();
@@ -1607,10 +1630,8 @@
                 const curTrans = sorted.filter(t => t.currency === currency);
                 if (curTrans.length === 0) return;
 
-                const symbol = currency === 'دينار ليبي' ? 'LYD' :
-                    currency === 'دولار' ? '$' : '€';
-                const flag = currency === 'دينار ليبي' ? '🇱🇾' :
-                    currency === 'دولار' ? '🇺🇸' : '🇪🇺';
+                const symbol = getCurrencySymbol(currency);
+                const flag = getCurrencyFlag(currency);
 
                 let totalDebit = 0,
                     totalCredit = 0;
@@ -1647,7 +1668,7 @@
                 allSections += `
                     <div style="background:#fff;border-radius:16px;padding:20px;margin-bottom:25px;border:2px solid rgba(255,215,0,0.15);">
                         <h3 style="color:#0a1628;border-bottom:3px solid #ffd700;padding-bottom:10px;margin-bottom:15px;font-size:1.3rem;">
-                            ${flag} ${currency}
+                            ${flag} ${getCurrencyName(currency)} (${symbol})
                         </h3>
                         <div style="display:flex;gap:15px;margin-bottom:15px;flex-wrap:wrap;">
                             <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
@@ -1705,10 +1726,10 @@
                     <div style="background:#f8f9fa;border-radius:12px;padding:15px;margin-bottom:20px;border:1px solid #e0e0e0;">
                         <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
                             <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
-                                إجمالي المدين (تذاكر + غرامات): $${grandTotalDebit.toFixed(2)}
+                                إجمالي المدين (تذاكر + غرامات): <span style="color:#fff;">$${grandTotalDebit.toFixed(2)}</span>
                             </div>
                             <div style="background:#0a1628;padding:10px 25px;border-radius:10px;color:#ffd700;font-weight:700;">
-                                إجمالي الدائن (استرجاع + تسليم): $${grandTotalCredit.toFixed(2)}
+                                إجمالي الدائن (استرجاع + تسليم): <span style="color:#fff;">$${grandTotalCredit.toFixed(2)}</span>
                             </div>
                             <div style="background:#ffd700;padding:10px 25px;border-radius:10px;color:#0a1628;font-weight:700;">
                                 الرصيد النهائي: ${grandBalance >= 0 ? 'مدين' : 'دائن'} $${Math.abs(grandBalance).toFixed(2)}
@@ -1751,10 +1772,8 @@
                 const curTrans = sorted.filter(t => t.currency === currency);
                 if (curTrans.length === 0) return;
 
-                const symbol = currency === 'دينار ليبي' ? 'LYD' :
-                    currency === 'دولار' ? '$' : '€';
-                const flag = currency === 'دينار ليبي' ? '🇱🇾' :
-                    currency === 'دولار' ? '🇺🇸' : '🇪🇺';
+                const symbol = getCurrencySymbol(currency);
+                const flag = getCurrencyFlag(currency);
 
                 let totalDebit = 0,
                     totalCredit = 0;
@@ -1796,7 +1815,7 @@
                 allSections += `
                     <div style="background:#fff;border-radius:12px;padding:15px;margin-bottom:20px;border:2px solid #e0e0e0;">
                         <h3 style="color:#0a1628;border-bottom:2px solid #ffd700;padding-bottom:8px;margin-bottom:12px;font-size:1.2rem;">
-                            ${flag} ${currency}
+                            ${flag} ${getCurrencyName(currency)} (${symbol})
                         </h3>
                         <div style="display:flex;gap:15px;margin-bottom:12px;flex-wrap:wrap;">
                             <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
