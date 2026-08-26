@@ -141,7 +141,6 @@
             font-size: 1.8rem;
         }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -272,7 +271,52 @@
             box-shadow: 0 12px 35px rgba(255, 215, 0, 0.3);
         }
 
-        /* ===== ACTION BUTTONS ===== */
+        .modal-content .btn-submit-secondary {
+            background: linear-gradient(135deg, #4dabf7, #1864ab);
+            color: #fff;
+        }
+
+        .modal-content .btn-submit-secondary:hover {
+            box-shadow: 0 12px 35px rgba(77, 171, 247, 0.3);
+        }
+
+        .refund-summary {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .refund-summary .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .refund-summary .row:last-child {
+            border-bottom: none;
+        }
+
+        .refund-summary .label {
+            color: #aaa;
+        }
+
+        .refund-summary .value {
+            font-weight: 600;
+        }
+
+        .refund-summary .value.original {
+            color: #ffd700;
+        }
+        .refund-summary .value.net {
+            color: #4dabf7;
+        }
+        .refund-summary .value.difference {
+            color: #ff6b6b;
+        }
+
         .action-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -379,7 +423,6 @@
             box-shadow: 0 15px 40px rgba(81, 207, 102, 0.1);
         }
 
-        /* ===== COMPANIES ===== */
         .companies-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -507,7 +550,6 @@
             font-size: 1.1rem;
         }
 
-        /* ===== TABLE ===== */
         .table-wrap {
             overflow-x: auto;
             margin-top: 20px;
@@ -674,7 +716,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -696,7 +737,6 @@
             transform: translateX(0);
         }
 
-        /* ===== PRINT STYLES ===== */
         @media print {
             body {
                 background: #fff !important;
@@ -823,7 +863,7 @@
 <body>
 
     <div class="app-wrapper">
-        <!-- ===== TOP NAV ===== -->
+        <!-- TOP NAV -->
         <nav class="top-nav">
             <div class="logo">
                 <h1><i class="fas fa-plane-departure"></i> TAREK</h1>
@@ -836,12 +876,10 @@
             </div>
         </nav>
 
-        <!-- ===== TOAST ===== -->
+        <!-- TOAST -->
         <div class="toast" id="toast"></div>
 
-        <!-- ============================================================ -->
-        <!-- ===== PAGE 1: الشركات ===== -->
-        <!-- ============================================================ -->
+        <!-- PAGE 1: الشركات -->
         <div class="page active" id="page-companies">
             <div class="card">
                 <div class="card-title">
@@ -850,22 +888,16 @@
                         <span id="companyCount">0</span> شركة
                     </span>
                 </div>
-
-                <div class="companies-grid" id="companiesGrid">
-                    <!-- ستضاف بواسطة JS -->
-                </div>
+                <div class="companies-grid" id="companiesGrid"></div>
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- ===== PAGE 2: المعاملات ===== -->
-        <!-- ============================================================ -->
+        <!-- PAGE 2: المعاملات -->
         <div class="page" id="page-transactions">
             <div class="card">
                 <div class="card-title">
                     <i class="fas fa-receipt"></i> إدارة المعاملات
                 </div>
-
                 <div class="action-grid">
                     <div class="action-card ticket" onclick="openTransactionModal('اصدار تذكرة')">
                         <span class="icon"><i class="fas fa-ticket-alt"></i></span>
@@ -890,7 +922,6 @@
                 </div>
             </div>
 
-            <!-- جدول المعاملات -->
             <div class="card">
                 <div class="card-title" style="font-size:1.2rem;">
                     <i class="fas fa-list"></i> سجل المعاملات
@@ -898,7 +929,6 @@
                         <span id="transCount">0</span> معاملة
                     </span>
                 </div>
-
                 <div class="filter-bar">
                     <select id="filterCompany" onchange="renderTransactions()">
                         <option value="all">جميع الشركات</option>
@@ -918,7 +948,6 @@
                     </select>
                     <input type="text" id="filterSearch" placeholder="بحث..." oninput="renderTransactions()" />
                 </div>
-
                 <div class="table-wrap">
                     <table>
                         <thead>
@@ -944,15 +973,12 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- ===== PAGE 3: الطباعة ===== -->
-        <!-- ============================================================ -->
+        <!-- PAGE 3: الطباعة -->
         <div class="page" id="page-print">
             <div class="card">
                 <div class="card-title">
                     <i class="fas fa-print"></i> طباعة كشف حساب
                 </div>
-
                 <div class="print-controls" style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">
                     <div class="form-group" style="flex:1;min-width:200px;">
                         <label style="color:#ccd6f0;font-weight:600;display:block;margin-bottom:6px;">اختر الشركة</label>
@@ -964,45 +990,34 @@
                         <i class="fas fa-print"></i> طباعة الكشف
                     </button>
                 </div>
-
-                <div class="print-preview" id="printPreview">
-                    <!-- سيتم ملؤها بواسطة JS -->
-                </div>
+                <div class="print-preview" id="printPreview"></div>
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- ===== MODAL: إضافة شركة ===== -->
-        <!-- ============================================================ -->
+        <!-- MODAL: إضافة شركة -->
         <div class="modal-overlay" id="companyModal">
             <div class="modal-content">
                 <button class="close-btn" onclick="closeModal('companyModal')"><i class="fas fa-times"></i></button>
                 <h2><i class="fas fa-plus-circle"></i> إضافة شركة جديدة</h2>
-
                 <div class="form-group">
                     <label>اسم الشركة <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalCompanyName" placeholder="أدخل اسم الشركة" />
                 </div>
-
                 <button class="btn-submit" onclick="saveCompanyFromModal()">
                     <i class="fas fa-save"></i> إضافة الشركة
                 </button>
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- ===== MODAL: معاملة جديدة ===== -->
-        <!-- ============================================================ -->
+        <!-- MODAL: معاملة جديدة -->
         <div class="modal-overlay" id="transactionModal">
             <div class="modal-content">
                 <button class="close-btn" onclick="closeModal('transactionModal')"><i class="fas fa-times"></i></button>
                 <h2 id="transModalTitle"><i class="fas fa-ticket-alt"></i> تسجيل معاملة</h2>
-
                 <div class="form-group">
                     <label>الشركة <span style="color:#ff6b6b;">*</span></label>
                     <select id="modalTransCompany"></select>
                 </div>
-
                 <div class="form-group">
                     <label>العملة <span style="color:#ff6b6b;">*</span></label>
                     <select id="modalTransCurrency">
@@ -1011,46 +1026,37 @@
                         <option value="يورو">🇪🇺 يورو (€)</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>الاسم <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransName" placeholder="اسم المسافر" />
                 </div>
-
                 <div class="form-group">
                     <label>الوجهة <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransDest" placeholder="المدينة / الدولة" />
                 </div>
-
                 <div class="form-group">
                     <label>رقم المستند <span style="color:#ff6b6b;">*</span></label>
                     <input type="text" id="modalTransDoc" placeholder="رقم التذكرة" />
                 </div>
-
                 <div class="form-group">
                     <label>التاريخ <span style="color:#ff6b6b;">*</span></label>
                     <input type="date" id="modalTransDate" />
                 </div>
-
                 <div class="form-group">
                     <label>القيمة <span style="color:#ff6b6b;">*</span></label>
                     <input type="number" id="modalTransAmount" placeholder="المبلغ" step="0.01" />
                 </div>
-
                 <div class="form-group">
                     <label>ملاحظة</label>
                     <input type="text" id="modalTransNote" placeholder="اختياري" />
                 </div>
-
                 <button class="btn-submit" onclick="saveTransactionFromModal()">
                     <i class="fas fa-check"></i> تأكيد المعاملة
                 </button>
             </div>
         </div>
 
-        <!-- ============================================================ -->
-        <!-- ===== MODAL: استرجاع ===== -->
-        <!-- ============================================================ -->
+        <!-- MODAL: استرجاع (معدل - بدون غرامة) -->
         <div class="modal-overlay" id="refundModal">
             <div class="modal-content">
                 <button class="close-btn" onclick="closeModal('refundModal')"><i class="fas fa-times"></i></button>
@@ -1058,7 +1064,9 @@
 
                 <div class="form-group">
                     <label>الشركة <span style="color:#ff6b6b;">*</span></label>
-                    <select id="modalRefundCompany" onchange="loadRefundableTickets()"></select>
+                    <select id="modalRefundCompany">
+                        <option value="all">جميع الشركات</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -1068,12 +1076,32 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label>ملاحظة الاسترجاع</label>
-                    <input type="text" id="modalRefundNote" placeholder="سبب الاسترجاع" />
+                <div class="refund-summary">
+                    <div class="row">
+                        <span class="label">💰 قيمة التذكرة الأصلية:</span>
+                        <span class="value original" id="displayOriginalAmount">0.00</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">📥 المبلغ الصافي للاسترجاع:</span>
+                        <span class="value net" id="displayNetAmount">0.00</span>
+                    </div>
+                    <div class="row">
+                        <span class="label">📌 الفرق (يظل في حساب الشركة):</span>
+                        <span class="value difference" id="displayDifference">0.00</span>
+                    </div>
                 </div>
 
-                <button class="btn-submit" onclick="saveRefund()" style="background:linear-gradient(135deg,#4dabf7,#1864ab);">
+                <div class="form-group">
+                    <label>المبلغ الصافي المراد استرجاعه <span style="color:#ff6b6b;">*</span></label>
+                    <input type="number" id="modalRefundAmount" placeholder="أدخل المبلغ الصافي" step="0.01" />
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظة الاسترجاع</label>
+                    <input type="text" id="modalRefundNote" placeholder="سبب الاسترجاع (اختياري)" />
+                </div>
+
+                <button class="btn-submit btn-submit-secondary" onclick="saveRefund()">
                     <i class="fas fa-undo-alt"></i> تأكيد الاسترجاع
                 </button>
             </div>
@@ -1154,7 +1182,7 @@
             t.textContent = msg;
             t.classList.add('show');
             clearTimeout(t._timer);
-            t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+            t._timer = setTimeout(() => t.classList.remove('show'), 4000);
         }
 
         // =============================================================
@@ -1205,8 +1233,6 @@
             let html = '';
             companies.forEach((company) => {
                 const trans = transactions.filter(t => t.company === company.name);
-
-                // حساب الإجماليات لكل عملة على حدة
                 const currencies = ['دينار ليبي', 'دولار', 'يورو'];
                 let currencyDetails = '';
 
@@ -1301,13 +1327,19 @@
                 if (!sel) return;
                 const current = sel.value;
                 sel.innerHTML = '';
+                if (id === 'modalRefundCompany') {
+                    const allOpt = document.createElement('option');
+                    allOpt.value = 'all';
+                    allOpt.textContent = 'جميع الشركات';
+                    sel.appendChild(allOpt);
+                }
                 companies.forEach(c => {
                     const opt = document.createElement('option');
                     opt.value = c.name;
                     opt.textContent = c.name;
                     sel.appendChild(opt);
                 });
-                if (companies.length === 0) {
+                if (companies.length === 0 && id !== 'modalRefundCompany') {
                     sel.innerHTML = '<option value="">لا توجد شركات</option>';
                 } else if (companies.some(c => c.name === current)) {
                     sel.value = current;
@@ -1391,15 +1423,23 @@
             showToast('✅ تم إضافة المعاملة');
         }
 
-        // ===== REFUND =====
+        // =============================================================
+        // REFUND (معدل - بدون غرامة)
+        // =============================================================
         function openRefundModal() {
             if (companies.length === 0) {
                 showToast('الرجاء إضافة شركة أولاً');
                 return;
             }
             populateCompanySelect();
+
             document.getElementById('modalRefundTicket').innerHTML = '<option value="">-- اختر التذكرة --</option>';
+            document.getElementById('modalRefundAmount').value = '';
             document.getElementById('modalRefundNote').value = '';
+            document.getElementById('displayOriginalAmount').textContent = '0.00';
+            document.getElementById('displayNetAmount').textContent = '0.00';
+            document.getElementById('displayDifference').textContent = '0.00';
+
             openModal('refundModal');
             loadRefundableTickets();
         }
@@ -1409,13 +1449,12 @@
             const select = document.getElementById('modalRefundTicket');
             select.innerHTML = '<option value="">-- اختر التذكرة --</option>';
 
-            if (!company) return;
-
-            const tickets = transactions.filter(t =>
-                t.company === company &&
-                t.type === 'اصدار تذكرة' &&
-                !t.refunded
-            );
+            let tickets;
+            if (company === 'all' || !company) {
+                tickets = transactions.filter(t => t.type === 'اصدار تذكرة' && !t.refunded);
+            } else {
+                tickets = transactions.filter(t => t.company === company && t.type === 'اصدار تذكرة' && !t.refunded);
+            }
 
             if (tickets.length === 0) {
                 select.innerHTML = '<option value="">لا توجد تذاكر قابلة للاسترجاع</option>';
@@ -1426,25 +1465,80 @@
                 const opt = document.createElement('option');
                 opt.value = t.id;
                 const symbol = getCurrencySymbol(t.currency);
-                opt.textContent = `${t.doc} - ${t.name} - ${t.destination} (${symbol}${t.amount})`;
+                opt.textContent = `${t.doc} - ${t.name} - ${t.destination} (${symbol}${t.amount}) [${t.company}]`;
                 select.appendChild(opt);
             });
+
+            document.getElementById('modalRefundTicket').dispatchEvent(new Event('change'));
         }
+
+        document.getElementById('modalRefundTicket').addEventListener('change', function() {
+            const ticketId = parseInt(this.value);
+            if (!ticketId) {
+                document.getElementById('displayOriginalAmount').textContent = '0.00';
+                document.getElementById('displayNetAmount').textContent = '0.00';
+                document.getElementById('displayDifference').textContent = '0.00';
+                document.getElementById('modalRefundAmount').value = '';
+                return;
+            }
+            const ticket = transactions.find(t => t.id === ticketId);
+            if (ticket) {
+                const amount = ticket.amount;
+                document.getElementById('displayOriginalAmount').textContent = amount.toFixed(2);
+                document.getElementById('modalRefundAmount').value = amount.toFixed(2);
+                document.getElementById('displayNetAmount').textContent = amount.toFixed(2);
+                document.getElementById('displayDifference').textContent = '0.00';
+            }
+        });
+
+        document.getElementById('modalRefundAmount').addEventListener('input', function() {
+            const originalText = document.getElementById('displayOriginalAmount').textContent;
+            const original = parseFloat(originalText) || 0;
+            const refund = parseFloat(this.value) || 0;
+            const diff = Math.max(0, original - refund);
+            document.getElementById('displayNetAmount').textContent = refund.toFixed(2);
+            document.getElementById('displayDifference').textContent = diff.toFixed(2);
+        });
 
         function saveRefund() {
             const company = document.getElementById('modalRefundCompany').value;
             const ticketId = parseInt(document.getElementById('modalRefundTicket').value);
+            const refundAmount = parseFloat(document.getElementById('modalRefundAmount').value);
             const note = document.getElementById('modalRefundNote').value.trim();
 
-            if (!company) { showToast('الرجاء اختيار الشركة'); return; }
-            if (!ticketId) { showToast('الرجاء اختيار التذكرة المراد استرجاعها'); return; }
+            if (!company || company === 'all') {
+                showToast('⚠️ الرجاء اختيار شركة محددة');
+                return;
+            }
+            if (!ticketId) {
+                showToast('⚠️ الرجاء اختيار التذكرة المراد استرجاعها');
+                return;
+            }
+            if (isNaN(refundAmount) || refundAmount <= 0) {
+                showToast('⚠️ الرجاء إدخال مبلغ صحيح للصافي');
+                return;
+            }
 
             const ticketIndex = transactions.findIndex(t => t.id === ticketId);
-            if (ticketIndex === -1) { showToast('التذكرة غير موجودة'); return; }
+            if (ticketIndex === -1) {
+                showToast('⚠️ التذكرة غير موجودة');
+                return;
+            }
 
             const ticket = transactions[ticketIndex];
-            if (ticket.refunded) { showToast('هذه التذكرة تم استرجاعها مسبقاً'); return; }
+            if (ticket.refunded) {
+                showToast('⚠️ هذه التذكرة تم استرجاعها مسبقاً');
+                return;
+            }
 
+            const originalAmount = ticket.amount;
+
+            if (refundAmount > originalAmount) {
+                showToast('⚠️ المبلغ الصافي لا يمكن أن يتجاوز قيمة التذكرة الأصلية');
+                return;
+            }
+
+            // إنشاء معاملة الاسترجاع بقيمة الصافي فقط (بدون غرامة)
             const refundT = {
                 id: nextTransId++,
                 company: company,
@@ -1454,22 +1548,32 @@
                 destination: ticket.destination,
                 doc: ticket.doc + '-R',
                 date: new Date().toISOString().split('T')[0],
-                amount: ticket.amount,
-                note: note || 'استرجاع تذكرة ' + ticket.doc,
+                amount: refundAmount,
+                note: note || `استرجاع تذكرة ${ticket.doc} (صافي: ${refundAmount})`,
                 refunded: true,
                 originalTicketId: ticket.id
             };
             transactions.push(refundT);
+
+            // تحديث التذكرة الأصلية
             ticket.refunded = true;
 
             saveTransactions();
             renderTransactions();
             renderCompanies();
             closeModal('refundModal');
-            showToast('✅ تم استرجاع التذكرة بنجاح');
+
+            const diff = originalAmount - refundAmount;
+            if (diff > 0) {
+                showToast(`✅ تم الاسترجاع بقيمة ${refundAmount}، والفرق ${diff} يظل في حساب الشركة`);
+            } else {
+                showToast(`✅ تم الاسترجاع بقيمة ${refundAmount}`);
+            }
         }
 
-        // ===== RENDER TRANSACTIONS =====
+        // =============================================================
+        // RENDER TRANSACTIONS
+        // =============================================================
         function renderTransactions() {
             const filterCompany = document.getElementById('filterCompany').value;
             const filterType = document.getElementById('filterType').value;
@@ -1609,7 +1713,7 @@
         }
 
         // =============================================================
-        // PAGE 3: الطباعة (الكشف مع العملات - الإجمالي في الأسفل)
+        // PAGE 3: PRINT
         // =============================================================
         function populatePrintSelect() {
             const sel = document.getElementById('printCompanySelect');
@@ -1645,7 +1749,6 @@
 
             const sorted = [...filtered].sort((a, b) => a.id - b.id);
 
-            // تقسيم المعاملات حسب العملة
             const currencies = ['دينار ليبي', 'دولار', 'يورو'];
             let allSections = '';
 
@@ -1713,7 +1816,6 @@
                                 </tbody>
                             </table>
                         </div>
-                        <!-- الإجمالي في الأسفل -->
                         <div style="display:flex;gap:15px;margin-top:15px;flex-wrap:wrap;border-top:2px solid #e0e0e0;padding-top:12px;">
                             <div style="background:#f5f5f5;padding:8px 20px;border-radius:8px;font-size:0.9rem;">
                                 <span style="color:#d63031;font-weight:700;">إجمالي المدين: ${symbol}${totalDebit.toFixed(2)}</span>
@@ -1747,7 +1849,6 @@
             `;
         }
 
-        // ===== PRINT FUNCTION =====
         function printStatement() {
             const companyFilter = document.getElementById('printCompanySelect').value;
             let filtered = transactions;
@@ -1763,7 +1864,6 @@
             const printWindow = window.open('', '_blank', 'width=1100,height=900');
             const sorted = [...filtered].sort((a, b) => a.id - b.id);
 
-            // تقسيم حسب العملة
             const currencies = ['دينار ليبي', 'دولار', 'يورو'];
             let allSections = '';
 
@@ -1832,7 +1932,6 @@
                                 ${rows}
                             </tbody>
                         </table>
-                        <!-- الإجمالي في الأسفل -->
                         <div style="display:flex;gap:15px;margin-top:12px;flex-wrap:wrap;border-top:2px solid #e0e0e0;padding-top:10px;">
                             <div style="background:#f5f5f5;padding:6px 18px;border-radius:6px;">
                                 <span style="color:#d63031;font-weight:700;">إجمالي المدين: ${symbol}${totalDebit.toFixed(2)}</span>
@@ -1901,17 +2000,15 @@
         populatePrintSelect();
         preparePrintData();
 
-        // أحداث الفلتر
         document.getElementById('filterCompany').addEventListener('change', renderTransactions);
         document.getElementById('filterType').addEventListener('change', renderTransactions);
         document.getElementById('filterCurrency').addEventListener('change', renderTransactions);
         document.getElementById('filterSearch').addEventListener('input', renderTransactions);
 
-        // تحديث التذاكر القابلة للاسترجاع عند تغيير الشركة
         document.getElementById('modalRefundCompany').addEventListener('change', loadRefundableTickets);
 
         console.log('✅ TAREK جاهز!');
-        console.log('البيانات فارغة تماماً، ابدأ بإضافة شركات ومعاملات.');
+        console.log('📋 تم تحديث نظام الاسترجاع: يتم استرجاع الصافي فقط والفرق يظل في حساب الشركة.');
     </script>
 
 </body>
