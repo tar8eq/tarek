@@ -562,7 +562,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
-            min-width: 1000px;
+            min-width: 1100px;
         }
 
         thead {
@@ -654,6 +654,21 @@
         .btn-del:hover {
             background: #e03131;
             transform: scale(1.05);
+        }
+
+        .btn-refund {
+            background: #ffd700;
+            color: #0b1424;
+        }
+        .btn-refund:hover {
+            background: #f0b300;
+            transform: scale(1.05);
+        }
+
+        .btn-refund:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         .filter-bar {
@@ -843,6 +858,18 @@
             }
             .action-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            table {
+                font-size: 0.7rem;
+                min-width: 900px;
+            }
+            th,
+            td {
+                padding: 8px 6px;
+            }
+            .action-btns .btn-sm {
+                padding: 3px 10px;
+                font-size: 0.6rem;
             }
         }
 
@@ -1056,24 +1083,20 @@
             </div>
         </div>
 
-        <!-- MODAL: استرجاع (معدل - بدون غرامة) -->
+        <!-- MODAL: استرجاع سريع من زر التذكرة -->
         <div class="modal-overlay" id="refundModal">
             <div class="modal-content">
                 <button class="close-btn" onclick="closeModal('refundModal')"><i class="fas fa-times"></i></button>
                 <h2><i class="fas fa-undo-alt"></i> استرجاع تذكرة</h2>
 
                 <div class="form-group">
-                    <label>الشركة <span style="color:#ff6b6b;">*</span></label>
-                    <select id="modalRefundCompany">
-                        <option value="all">جميع الشركات</option>
-                    </select>
+                    <label>الشركة</label>
+                    <input type="text" id="refundCompanyDisplay" disabled style="opacity:0.7;" />
                 </div>
 
                 <div class="form-group">
-                    <label>اختر التذكرة المراد استرجاعها <span style="color:#ff6b6b;">*</span></label>
-                    <select id="modalRefundTicket">
-                        <option value="">-- اختر التذكرة --</option>
-                    </select>
+                    <label>التذكرة</label>
+                    <input type="text" id="refundTicketDisplay" disabled style="opacity:0.7;" />
                 </div>
 
                 <div class="refund-summary">
@@ -1118,6 +1141,7 @@
         let nextTransId = 1;
         let editingTransId = null;
         let currentTransactionType = '';
+        let refundTargetId = null; // التذكرة المحددة للاسترجاع
 
         // =============================================================
         // FUNCTIONS
@@ -1321,25 +1345,19 @@
         // PAGE 2: المعاملات
         // =============================================================
         function populateCompanySelect() {
-            const selects = ['transCompany', 'modalTransCompany', 'modalRefundCompany'];
+            const selects = ['transCompany', 'modalTransCompany'];
             selects.forEach(id => {
                 const sel = document.getElementById(id);
                 if (!sel) return;
                 const current = sel.value;
                 sel.innerHTML = '';
-                if (id === 'modalRefundCompany') {
-                    const allOpt = document.createElement('option');
-                    allOpt.value = 'all';
-                    allOpt.textContent = 'جميع الشركات';
-                    sel.appendChild(allOpt);
-                }
                 companies.forEach(c => {
                     const opt = document.createElement('option');
                     opt.value = c.name;
                     opt.textContent = c.name;
                     sel.appendChild(opt);
                 });
-                if (companies.length === 0 && id !== 'modalRefundCompany') {
+                if (companies.length === 0) {
                     sel.innerHTML = '<option value="">لا توجد شركات</option>';
                 } else if (companies.some(c => c.name === current)) {
                     sel.value = current;
@@ -1424,72 +1442,104 @@
         }
 
         // =============================================================
-        // REFUND (معدل - بدون غرامة)
+        // REFUND - من زر الاسترجاع في جدول المعاملات
         // =============================================================
+        function openRefundForTicket(ticketId) {
+            const ticket = transactions.find(t => t.id === ticketId);
+            if (!ticket) {
+                showToast('⚠️ التذكرة غير موجودة');
+                return;
+            }
+
+            if (ticket.type !== 'اصدار تذكرة') {
+                showToast('⚠️ هذه المعاملة ليست تذكرة');
+                return;
+            }
+
+            if (ticket.refunded) {
+                showToast('⚠️ هذه التذكرة تم استرجاعها مسبقاً');
+                return;
+            }
+
+            refundTargetId = ticketId;
+
+            // تعبئة البيانات
+            document.getElementById('refundCompanyDisplay').value = ticket.company;
+            document.getElementById('refundTicketDisplay').value = `${ticket.doc} - ${ticket.name} - ${ticket.destination}`;
+            document.getElementById('displayOriginalAmount').textContent = ticket.amount.toFixed(2);
+            document.getElementById('modalRefundAmount').value = ticket.amount.toFixed(2);
+            document.getElementById('displayNetAmount').textContent = ticket.amount.toFixed(2);
+            document.getElementById('displayDifference').textContent = '0.00';
+            document.getElementById('modalRefundNote').value = '';
+
+            openModal('refundModal');
+        }
+
+        // استرجاع من البطاقة العامة (تختار التذكرة من القائمة)
         function openRefundModal() {
             if (companies.length === 0) {
                 showToast('الرجاء إضافة شركة أولاً');
                 return;
             }
-            populateCompanySelect();
 
-            document.getElementById('modalRefundTicket').innerHTML = '<option value="">-- اختر التذكرة --</option>';
-            document.getElementById('modalRefundAmount').value = '';
-            document.getElementById('modalRefundNote').value = '';
-            document.getElementById('displayOriginalAmount').textContent = '0.00';
-            document.getElementById('displayNetAmount').textContent = '0.00';
-            document.getElementById('displayDifference').textContent = '0.00';
-
-            openModal('refundModal');
-            loadRefundableTickets();
-        }
-
-        function loadRefundableTickets() {
-            const company = document.getElementById('modalRefundCompany').value;
-            const select = document.getElementById('modalRefundTicket');
-            select.innerHTML = '<option value="">-- اختر التذكرة --</option>';
-
-            let tickets;
-            if (company === 'all' || !company) {
-                tickets = transactions.filter(t => t.type === 'اصدار تذكرة' && !t.refunded);
-            } else {
-                tickets = transactions.filter(t => t.company === company && t.type === 'اصدار تذكرة' && !t.refunded);
-            }
-
+            // نفتح نافذة اختيار التذكرة من القائمة
+            // لكننا نفضل طريقة الزر المباشر، فنجعلها تفتح مع قائمة اختيار
+            // نستخدم طريقة مبسطة: نفتح نافذة ونعرض قائمة بجميع التذاكر غير المسترجعة
+            const tickets = transactions.filter(t => t.type === 'اصدار تذكرة' && !t.refunded);
             if (tickets.length === 0) {
-                select.innerHTML = '<option value="">لا توجد تذاكر قابلة للاسترجاع</option>';
+                showToast('⚠️ لا توجد تذاكر قابلة للاسترجاع');
                 return;
             }
+
+            // نستخدم أول تذكرة كقيمة افتراضية
+            const firstTicket = tickets[0];
+            refundTargetId = firstTicket.id;
+
+            document.getElementById('refundCompanyDisplay').value = firstTicket.company;
+            document.getElementById('refundTicketDisplay').value =
+                `${firstTicket.doc} - ${firstTicket.name} - ${firstTicket.destination}`;
+            document.getElementById('displayOriginalAmount').textContent = firstTicket.amount.toFixed(2);
+            document.getElementById('modalRefundAmount').value = firstTicket.amount.toFixed(2);
+            document.getElementById('displayNetAmount').textContent = firstTicket.amount.toFixed(2);
+            document.getElementById('displayDifference').textContent = '0.00';
+            document.getElementById('modalRefundNote').value = '';
+
+            openModal('refundModal');
+
+            // نضيف إمكانية تغيير التذكرة عبر قائمة منسدلة (للمرونة)
+            // نعدل حقل التذكرة ليصبح select
+            const ticketDisplay = document.getElementById('refundTicketDisplay');
+            const parent = ticketDisplay.parentElement;
+
+            // نحول input إلى select مع الحفاظ على القيمة
+            const select = document.createElement('select');
+            select.id = 'refundTicketSelect';
+            select.style.cssText = ticketDisplay.style.cssText + 'width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px 20px;color:#fff;font-size:1rem;outline:none;';
 
             tickets.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t.id;
                 const symbol = getCurrencySymbol(t.currency);
-                opt.textContent = `${t.doc} - ${t.name} - ${t.destination} (${symbol}${t.amount}) [${t.company}]`;
+                opt.textContent = `${t.doc} - ${t.name} (${symbol}${t.amount})`;
+                if (t.id === firstTicket.id) opt.selected = true;
                 select.appendChild(opt);
             });
 
-            document.getElementById('modalRefundTicket').dispatchEvent(new Event('change'));
-        }
+            select.addEventListener('change', function() {
+                const id = parseInt(this.value);
+                const t = transactions.find(x => x.id === id);
+                if (t) {
+                    refundTargetId = id;
+                    document.getElementById('refundCompanyDisplay').value = t.company;
+                    document.getElementById('displayOriginalAmount').textContent = t.amount.toFixed(2);
+                    document.getElementById('modalRefundAmount').value = t.amount.toFixed(2);
+                    document.getElementById('displayNetAmount').textContent = t.amount.toFixed(2);
+                    document.getElementById('displayDifference').textContent = '0.00';
+                }
+            });
 
-        document.getElementById('modalRefundTicket').addEventListener('change', function() {
-            const ticketId = parseInt(this.value);
-            if (!ticketId) {
-                document.getElementById('displayOriginalAmount').textContent = '0.00';
-                document.getElementById('displayNetAmount').textContent = '0.00';
-                document.getElementById('displayDifference').textContent = '0.00';
-                document.getElementById('modalRefundAmount').value = '';
-                return;
-            }
-            const ticket = transactions.find(t => t.id === ticketId);
-            if (ticket) {
-                const amount = ticket.amount;
-                document.getElementById('displayOriginalAmount').textContent = amount.toFixed(2);
-                document.getElementById('modalRefundAmount').value = amount.toFixed(2);
-                document.getElementById('displayNetAmount').textContent = amount.toFixed(2);
-                document.getElementById('displayDifference').textContent = '0.00';
-            }
-        });
+            parent.replaceChild(select, ticketDisplay);
+        }
 
         document.getElementById('modalRefundAmount').addEventListener('input', function() {
             const originalText = document.getElementById('displayOriginalAmount').textContent;
@@ -1501,19 +1551,15 @@
         });
 
         function saveRefund() {
-            const company = document.getElementById('modalRefundCompany').value;
-            const ticketId = parseInt(document.getElementById('modalRefundTicket').value);
+            const ticketId = refundTargetId;
             const refundAmount = parseFloat(document.getElementById('modalRefundAmount').value);
             const note = document.getElementById('modalRefundNote').value.trim();
 
-            if (!company || company === 'all') {
-                showToast('⚠️ الرجاء اختيار شركة محددة');
-                return;
-            }
             if (!ticketId) {
-                showToast('⚠️ الرجاء اختيار التذكرة المراد استرجاعها');
+                showToast('⚠️ الرجاء اختيار التذكرة');
                 return;
             }
+
             if (isNaN(refundAmount) || refundAmount <= 0) {
                 showToast('⚠️ الرجاء إدخال مبلغ صحيح للصافي');
                 return;
@@ -1538,10 +1584,10 @@
                 return;
             }
 
-            // إنشاء معاملة الاسترجاع بقيمة الصافي فقط (بدون غرامة)
+            // إنشاء معاملة الاسترجاع بقيمة الصافي فقط
             const refundT = {
                 id: nextTransId++,
-                company: company,
+                company: ticket.company,
                 type: 'استرجاع',
                 currency: ticket.currency,
                 name: ticket.name + ' (استرجاع)',
@@ -1569,6 +1615,9 @@
             } else {
                 showToast(`✅ تم الاسترجاع بقيمة ${refundAmount}`);
             }
+
+            // إعادة تعيين
+            refundTargetId = null;
         }
 
         // =============================================================
@@ -1612,6 +1661,13 @@
                     t.type === 'استرجاع' ? '#4dabf7' : '#51cf66';
                 const refundBadge = t.refunded ? ' 🔄' : '';
                 const symbol = getCurrencySymbol(t.currency);
+
+                // زر الاسترجاع: يظهر فقط للتذاكر غير المسترجعة
+                const showRefundBtn = (t.type === 'اصدار تذكرة' && !t.refunded);
+                const refundBtn = showRefundBtn ?
+                    `<button class="btn-sm btn-refund" onclick="openRefundForTicket(${t.id})" title="استرجاع التذكرة"><i class="fas fa-undo-alt"></i></button>` :
+                    '';
+
                 html += `
                     <tr>
                         <td>${i+1}</td>
@@ -1628,6 +1684,7 @@
                             <div class="action-btns">
                                 <button class="btn-sm btn-edit" onclick="editTransaction(${t.id})"><i class="fas fa-pen"></i></button>
                                 <button class="btn-sm btn-del" onclick="deleteTransaction(${t.id})"><i class="fas fa-trash"></i></button>
+                                ${refundBtn}
                             </div>
                         </td>
                     </tr>
@@ -2005,10 +2062,8 @@
         document.getElementById('filterCurrency').addEventListener('change', renderTransactions);
         document.getElementById('filterSearch').addEventListener('input', renderTransactions);
 
-        document.getElementById('modalRefundCompany').addEventListener('change', loadRefundableTickets);
-
         console.log('✅ TAREK جاهز!');
-        console.log('📋 تم تحديث نظام الاسترجاع: يتم استرجاع الصافي فقط والفرق يظل في حساب الشركة.');
+        console.log('📋 زر الاسترجاع يظهر بجانب كل تذكرة في جدول المعاملات.');
     </script>
 
 </body>
